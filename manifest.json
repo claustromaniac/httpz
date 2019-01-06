@@ -1,0 +1,23 @@
+{
+	"applications": {
+		"gecko": {
+			"id": "httpz@cm.org",
+			"strict_min_version": "54.0"
+		}
+	},
+	"background": {
+		"scripts": [ "httpz.js" ]
+	},
+	"description": "Zapping those inZecure connections into sublime submission since ~2018.",
+	"author": "claustromaniac",
+	"homepage_url": "https://github.com/claustromaniac/httpz",
+	"icons": {"64": "httpz.svg"},
+	"manifest_version": 2,
+	"name": "HTTPZ",
+	"permissions": [
+		"webRequest",
+		"webRequestBlocking",
+		"<all_urls>"
+	],
+	"version": "0.5.0"
+}

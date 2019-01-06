@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   id="SVGRoot"
+   version="1.1"
+   viewBox="0 0 64 64"
+   height="64px"
+   width="64px">
+  <defs
+     id="defs815" />
+  <metadata
+     id="metadata818">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     style="display:inline"
+     id="layer1">
+    <g
+       id="g2122">
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:53.33333206px;line-height:1.25;font-family:consolas;-inkscape-font-specification:'consolas Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+         x="17.750893"
+         y="40.842255"
+         id="text1394"><tspan
+           id="tspan1392"
+           x="17.750893"
+           y="87.118294"></tspan></text>
+      <path
+         style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:8.34790325;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:6.9000001;stroke-dasharray:none;stroke-dashoffset:74.26771545;stroke-opacity:1;paint-order:markers fill stroke"
+         id="path1412"
+         d="M 47.469131,25.898128 A 16.477686,15.293312 0 0 1 26.308483,34.880577 16.477686,15.293312 0 0 1 16.568485,15.267284 16.477686,15.293312 0 0 1 37.672101,6.1699878 16.477686,15.293312 0 0 1 47.535672,25.730011" />
+      <rect
+         style="opacity:1;fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:13.99707413;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:6.9000001;stroke-dasharray:none;stroke-dashoffset:74.26771545;stroke-opacity:1;paint-order:markers fill stroke"
+         id="rect2100"
+         width="46.355354"
+         height="29.111311"
+         x="9.0534115"
+         y="26.810352" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:53.33333206px;line-height:1.25;font-family:consolas;-inkscape-font-specification:'consolas Bold';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+         x="4.9497476"
+         y="41.195805"
+         id="text2108"><tspan
+           id="tspan2106"
+           x="4.9497476"
+           y="87.471848" /></text>
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:44.02007675px;line-height:1.25;font-family:'Plantagenet Cherokee';-inkscape-font-specification:'Plantagenet Cherokee';letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:6.23906612"
+         x="12.031102"
+         y="67.507591"
+         id="text2112"
+         transform="scale(1.2804684,0.78096423)"><tspan
+           id="tspan2110"
+           x="12.031102"
+           y="67.507591"
+           style="stroke-width:6.23906612">Z</tspan></text>
+    </g>
+  </g>
+</svg>
