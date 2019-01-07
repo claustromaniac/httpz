@@ -3,10 +3,11 @@
 const processed = new Set();
 const ignored = new Set();
 const filter = {urls: ["https://*/*"], types: ['main_frame']};
-const error_rx = /^SEC_ERROR|\bSSL(?:_|\b)|(?:_|\b)CERT|\bcertificate/;
+const error_rx = /^SEC_ERROR|\bSSL(?:_|\b)|(?:_|\b)CERT|\b[Cc]ertificate/;
 const other_errors = new Set([
 	'MOZILLA_PKIX_ERROR_ADDITIONAL_POLICY_CONSTRAINT_FAILED',
-	'NS_ERROR_NET_ON_TLS_HANDSHAKE_ENDED'
+	'NS_ERROR_NET_ON_TLS_HANDSHAKE_ENDED',
+	'NS_ERROR_NET_TIMEOUT'
 ]);
 
 const step = 60;
