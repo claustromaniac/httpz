@@ -7,7 +7,8 @@ const error_rx = /^SEC_ERROR|\bSSL(?:_|\b)|(?:_|\b)CERT|\b[Cc]ertificate/;
 const other_errors = new Set([
 	'MOZILLA_PKIX_ERROR_ADDITIONAL_POLICY_CONSTRAINT_FAILED',
 	'NS_ERROR_NET_ON_TLS_HANDSHAKE_ENDED',
-	'NS_ERROR_NET_TIMEOUT'
+	'NS_ERROR_NET_TIMEOUT',
+	'Peer reports it experienced an internal error.'
 ]);
 
 const step = 60;
