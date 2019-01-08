@@ -25,14 +25,13 @@ function stopTimer() {
 }
 
 function runTimer() {
+	counter = 0;
 	if (!timerID) {
-		counter = 0;
-		timeout = 240;
+		timeout = 120;
 		timerID = setInterval(() => {
 			if (++counter >= step || !--timeout) stopTimer();
 		}, 1000);
 	}
-	counter = 0;
 }
 
 function downgrade(url, d) {
