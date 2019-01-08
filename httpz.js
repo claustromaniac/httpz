@@ -1,9 +1,10 @@
 'use strict';
 
 const processed = new Set();
-const ignored = new Set();
+const ignored = new Set(['localhost', 'loopback']);
 const filter = {urls: ["https://*/*"], types: ['main_frame']};
 const error_rx = /^SEC_ERROR|(?:_|\b)(?:SSL|TLS|CERT)(?:_|\b)|\b[Cc]ertificate/;
+const loopback_rx = /^127\.\d+\.\d+\.\d+$/;
 const other_errors = new Set([
 	'MOZILLA_PKIX_ERROR_ADDITIONAL_POLICY_CONSTRAINT_FAILED',
 	'NS_ERROR_CONNECTION_REFUSED',
@@ -45,7 +46,7 @@ function downgrade(url, d) {
 
 browser.webRequest.onBeforeRequest.addListener(d => {
 	const url = new URL(d.url);
-	if (!ignored.has(url.hostname)) {
+	if (!ignored.has(url.hostname) && !loopback_rx.test(url.hostname)) {
 		runTimer();
 		processed.add(url.hostname);
 		url.protocol = 'https:';
