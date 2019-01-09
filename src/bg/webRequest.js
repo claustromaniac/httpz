@@ -1,10 +1,14 @@
 'use strict';
 
 const processed = new Set();
-const ignored = new Set(['localhost', 'loopback']);
+const stackCleaner = new DelayableAction(60, 120, () => {
+	processed.clear();
+});
+const saver = new DelayableAction(10, 60, () => {
+	settings.save();
+});
 const filter = {urls: ["https://*/*"], types: ['main_frame']};
 const error_rx = /^SEC_ERROR|(?:_|\b)(?:SSL|TLS|CERT)(?:_|\b)|\b[Cc]ertificate/;
-const loopback_rx = /^127\.\d+\.\d+\.\d+$/;
 const other_errors = new Set([
 	'MOZILLA_PKIX_ERROR_ADDITIONAL_POLICY_CONSTRAINT_FAILED',
 	'NS_ERROR_CONNECTION_REFUSED',
@@ -13,30 +17,17 @@ const other_errors = new Set([
 	'Peer using unsupported version of security protocol.'
 ]);
 
-const step = 60;
-let timeout;
-let counter;
-let timerID;
+/** ---------- Functions ---------- **/
 
-function stopTimer() {
-	if (!timerID) return;
-	processed.clear();
-	clearInterval(timerID);
-	timerID = false;
-}
-
-function runTimer() {
-	counter = 0;
-	if (!timerID) {
-		timeout = 120;
-		timerID = setInterval(() => {
-			if (++counter >= step || !--timeout) stopTimer();
-		}, 1000);
+function ignore(host) {
+	if (!settings.ignored[host]) {
+		settings.ignored[host] = Date.now();
+		if (settings.ignorePeriod) saver.run();
 	}
 }
 
 function downgrade(url, d) {
-	ignored.add(url.hostname);
+	ignore(url.hostname);
 	url.protocol = 'http:';
 	browser.tabs.update(
 		d.tabId,
@@ -44,11 +35,28 @@ function downgrade(url, d) {
 	);
 }
 
+function daysSince(unixTimeStamp) {
+	return (Date.now() - unixTimeStamp) / 86400000;
+}
+
+/** ------------------------------ **/
+
 browser.webRequest.onBeforeRequest.addListener(d => {
 	const url = new URL(d.url);
-	if (!ignored.has(url.hostname) && !loopback_rx.test(url.hostname)) {
-		runTimer();
+	if (settings.ignorePeriod > 0) {
+		const ignoredTime = settings.ignored[url.hostname];
+		if (ignoredTime && daysSince(ignoredTime) > settings.ignorePeriod) {
+			delete settings.ignored[url.hostname];
+		}
+	}
+	if (
+		!settings.ignored[url.hostname] &&
+		url.hostname !== 'localhost' &&
+		url.hostname !== 'loopback' &&
+		!/^127\.\d+\.\d+\.\d+$/.test(url.hostname)
+	) {
 		processed.add(url.hostname);
+		stackCleaner.run();
 		url.protocol = 'https:';
 		return {redirectUrl: url.toString()}
 	}
@@ -58,22 +66,22 @@ browser.webRequest.onBeforeRedirect.addListener(d => {
 	const url = new URL(d.url);
 	const newTarget = new URL(d.redirectUrl);
 	if (url.hostname === newTarget.hostname) {
-		if (newTarget.protocol === 'http:') ignored.add(url.hostname);
+		if (newTarget.protocol === 'http:') ignore(url.hostname);
 	} else if (processed.has(url.hostname)) {
 		processed.add(newTarget.hostname);
-		runTimer();
+		stackCleaner.run();
 	}
 }, filter);
 
 browser.webRequest.onCompleted.addListener(d => {
 	const url = new URL(d.url);
 	if ( d.statusCode >= 400 && processed.has(url.hostname)
-		&& !ignored.has(url.hostname) ) downgrade(url, d);
+		&& !settings.ignored[url.hostname] ) downgrade(url, d);
 }, filter);
 
 browser.webRequest.onErrorOccurred.addListener(d => {
 	const url = new URL(d.url);
-	if ( processed.has(url.hostname) && !ignored.has(url.hostname) &&
+	if ( processed.has(url.hostname) && !settings.ignored[url.hostname] &&
 		( error_rx.test(d.error) || other_errors.has(d.error) )
 	) downgrade(url, d);
 	else console.info(`Error info: ${d.error}`);

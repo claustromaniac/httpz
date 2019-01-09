@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link href="options.css" rel="stylesheet">
+	</head>
+	<body>
+		<p>Check again if a site supports HTTPS...</p>
+		<div class="browser-style fb">
+			<input id="session" name="period" type="radio"><label for="session">after Firefox is restarted</label>
+		</div>
+		<div class="browser-style fb">
+			<input id="xdays" name="period" type="radio"><label for="xdays">after
+			<input id="days" name="days" type="number" min=1 required> days</label>
+		</div>
+		<div class="browser-style fb">
+			<input id="permanent" name="period" type="radio"><label for="permanent">never</label>
+		</div><br>
+		<button class="browser-style" id="clear">Forget sites</button>
+		<button class="browser-style" id="save">Save</button><span class="hidden" id="status"></span>
+		<script src="options.js"></script>
+	</body>
+</html>

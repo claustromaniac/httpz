@@ -1,0 +1,32 @@
+* { box-sizing: border-box; }
+body { display: table; }
+button { margin-left: 0.25em; }
+#days {
+	background-color: #FFF;
+	color: #000;
+	text-align: center;
+	width: 4em;
+}
+.fb {
+	align-items: center;
+	display: flex;
+	flex-flow: row wrap;
+}
+.fb * { margin: auto inherit; }
+.hidden {
+	opacity: 0;
+	transition: opacity 500ms;
+}
+.shown { opacity: 1; }
+.status {
+	font-weight: 300;
+	margin-left: 1em;
+}
+.saved {
+	color: #021;
+	text-shadow: 0 0 0.2em #0F8;
+}
+.error {
+	color: #300;
+	text-shadow: 0 0 0.2em #F00;
+}
