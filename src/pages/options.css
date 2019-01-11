@@ -18,7 +18,7 @@ button { margin-left: 0.25em; }
 	transition: opacity 500ms;
 }
 .shown { opacity: 1; }
-.status {
+#status {
 	font-weight: 300;
 	margin-left: 1em;
 }

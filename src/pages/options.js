@@ -17,9 +17,9 @@ const ui = (() => {
 
 function setStatus(msg, type) {
 	ui.status.textContent = msg;
-	ui.status.className = `status shown ${type}`;
+	ui.status.className = `shown ${type}`;
 	setTimeout(() => {
-		ui.status.className = 'status hidden';
+		ui.status.className = 'hidden';
 	}, 2500);
 }
 
