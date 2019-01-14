@@ -23,11 +23,18 @@
 		"browser_style": true,
 		"page": "pages/options.htm"
 	},
+	"page_action": {
+		"browser_style": true,
+		"default_icon": {"64": "assets/httpz.svg"},
+		"default_popup": "pages/popup.htm",
+		"default_title": "HTTPZ"
+	},
 	"permissions": [
 		"storage",
+		"tabs",
 		"webRequest",
 		"webRequestBlocking",
 		"<all_urls>"
 	],
-	"version": "0.6.0b"
+	"version": "0.6.0b2"
 }

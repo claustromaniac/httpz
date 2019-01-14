@@ -1,0 +1,11 @@
+* {
+	box-sizing: border-box;
+	text-align: center;
+}
+body {
+	display: table;
+	padding: 2em;
+	width: 30em;
+}
+p { font-weight: 100; }
+button { margin-left: 0.25em; }

@@ -1,19 +1,25 @@
 class Settings {
 	constructor() {
+		this.ignored = {}; // hostname:unixTimeStamp pairs
 		this.defaults = {
-			'ignored': {}, // hostname:unixTimeStamp pairs
-			'ignorePeriod': 7 //-1 = permanent, 0 = session-only, 1+ = X days
+			'ignorePeriod': 7, //-1 = permanent, 0 = session-only, 1+ = X days
+			'whitelist': {}
 		};
 		this.loading = (async () => {
-			let saved = await browser.storage.local.get(this.defaults);
+			const data = browser.storage.local;
+			let saved = await data.get(this.defaults);
 			this.all = saved;
-			await browser.storage.local.set(saved);
+			await data.set(saved);
+			if (this.ignorePeriod) data.get().then(r => {
+				this.ignored = r.ignored;
+			});
 			browser.storage.onChanged.addListener((changes, area) => {
 				console.debug(`HTTPZ: ${area} storage changed`);
 				for (const i in changes) {
 					if (changes[i].hasOwnProperty('newValue')) this[i] = changes[i].newValue;
 					else if (changes[i].hasOwnProperty('oldValue')) delete this[i];
 				}
+				if (changes.ignorePeriod) data.set({ignored: this.ignored});
 			});
 			console.log('HTTPZ: settings loaded');
 			delete this.loading;
@@ -29,11 +35,6 @@ class Settings {
 	}
 	set all(obj) {
 		for (const i in obj) this[i] = obj[i];
-	}
-	save() {
-		this.all.then(r => {
-			browser.storage.local.set(r);
-		});
 	}
 }
 

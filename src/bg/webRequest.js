@@ -4,10 +4,11 @@ const processed = new Set();
 const stackCleaner = new DelayableAction(60, 120, () => {
 	processed.clear();
 });
-const saver = new DelayableAction(10, 60, () => {
-	settings.save();
+const ignoredSaver = new DelayableAction(10, 60, () => {
+	if (settings.ignorePeriod) browser.storage.local.set({ignored: settings.ignored});
 });
-const filter = {urls: ["https://*/*"], types: ['main_frame']};
+const filter = {urls: ["http://*/*"], types: ['main_frame']};
+const sfilter = {urls: ["https://*/*"], types: ['main_frame']};
 const error_rx = /^SEC_ERROR|(?:_|\b)(?:SSL|TLS|CERT)(?:_|\b)|\b[Cc]ertificate/;
 const other_errors = new Set([
 	'MOZILLA_PKIX_ERROR_ADDITIONAL_POLICY_CONSTRAINT_FAILED',
@@ -22,7 +23,7 @@ const other_errors = new Set([
 function ignore(host) {
 	if (!settings.ignored[host]) {
 		settings.ignored[host] = Date.now();
-		if (settings.ignorePeriod) saver.run();
+		if (settings.ignorePeriod) ignoredSaver.run();
 	}
 }
 
@@ -51,6 +52,7 @@ browser.webRequest.onBeforeRequest.addListener(d => {
 	}
 	if (
 		!settings.ignored[url.hostname] &&
+		!settings.whitelist[url.hostname] &&
 		url.hostname !== 'localhost' &&
 		url.hostname !== 'loopback' &&
 		!/^127\.\d+\.\d+\.\d+$/.test(url.hostname)
@@ -60,7 +62,7 @@ browser.webRequest.onBeforeRequest.addListener(d => {
 		url.protocol = 'https:';
 		return {redirectUrl: url.toString()}
 	}
-}, {urls: ["http://*/*"], types: ['main_frame']}, ['blocking']);
+}, filter, ['blocking']);
 
 browser.webRequest.onBeforeRedirect.addListener(d => {
 	const url = new URL(d.url);
@@ -71,12 +73,18 @@ browser.webRequest.onBeforeRedirect.addListener(d => {
 		processed.add(newTarget.hostname);
 		stackCleaner.run();
 	}
-}, filter);
+}, sfilter);
 
 browser.webRequest.onCompleted.addListener(d => {
 	const url = new URL(d.url);
-	if ( d.statusCode >= 400 && processed.has(url.hostname)
-		&& !settings.ignored[url.hostname] ) downgrade(url, d);
+	if (!processed.has(url.hostname)) return;
+	if ( d.statusCode >= 400 && !settings.ignored[url.hostname] ) downgrade(url, d);
+	else browser.pageAction.show(d.tabId);
+}, sfilter);
+
+browser.webRequest.onCompleted.addListener(d => {
+	const url = new URL(d.url);
+	if (settings.whitelist[url.hostname]) browser.pageAction.show(d.tabId);
 }, filter);
 
 browser.webRequest.onErrorOccurred.addListener(d => {
@@ -85,4 +93,4 @@ browser.webRequest.onErrorOccurred.addListener(d => {
 		( error_rx.test(d.error) || other_errors.has(d.error) )
 	) downgrade(url, d);
 	else console.info(`Error info: ${d.error}`);
-}, filter);
+}, sfilter);
