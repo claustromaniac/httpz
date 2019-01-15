@@ -7,7 +7,7 @@ browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
 	const url = new URL(tab.url);
 	if (url.protocol === 'https:') {
 		ui.info.textContent = `${url.hostname} was automatically redirected to HTTPS. Click the button below to whitelist this site and reload the tab in HTTP.`;
-		ui.whitelist.textContent = 'whitelist';
+		ui.whitelist.textContent = 'add to whitelist';
 		ui.whitelist.onclick = e => {
 			ui.whitelist.disabled = true;
 			browser.runtime.sendMessage({host: url.hostname, value: true}).then(() => {

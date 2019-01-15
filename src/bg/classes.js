@@ -10,8 +10,8 @@ class Settings {
 			let saved = await data.get(this.defaults);
 			this.all = saved;
 			await data.set(saved);
-			if (this.ignorePeriod) data.get().then(r => {
-				this.ignored = r.ignored;
+			if (this.ignorePeriod) await data.get().then(r => {
+				if (r.ignored) this.ignored = r.ignored;
 			});
 			browser.storage.onChanged.addListener((changes, area) => {
 				console.debug(`HTTPZ: ${area} storage changed`);
