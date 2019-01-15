@@ -94,3 +94,9 @@ browser.webRequest.onErrorOccurred.addListener(d => {
 	) downgrade(url, d);
 	else console.info(`Error info: ${d.error}`);
 }, sfilter);
+
+browser.webRequest.onErrorOccurred.addListener(d => {
+	if (settings.ignored[url.hostname] && processed.has(url.hostname)) {
+		delete settings.ignored[url.hostname];
+	}
+}, filter);
