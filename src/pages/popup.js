@@ -6,7 +6,7 @@ browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
 	const tab = tabs[0];
 	const url = new URL(tab.url);
 	if (url.protocol === 'https:') {
-		ui.info.textContent = `${url.hostname} was automatically redirected to HTTPS. Click the button below to whitelist this site and reload the tab in HTTP.`;
+		ui.info.textContent = `${url.hostname} was redirected to HTTPS. If you click the button below, this site will be added to the whitelist and the tab will be reloaded in HTTP.`;
 		ui.whitelist.textContent = 'add to whitelist';
 		ui.whitelist.onclick = e => {
 			ui.whitelist.disabled = true;
@@ -19,7 +19,7 @@ browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
 			});
 		};
 	} else {
-		ui.info.textContent = `HTTPZ did not try to redirect ${url.hostname} to HTTPS because it is in the whitelist. Click the button below to remove this site from the whitelist and attempt to reload the tab in HTTPS.`;
+		ui.info.textContent = `HTTPZ did not try to redirect ${url.hostname} to HTTPS because it is in the whitelist. If you click the button below, this site will be removed from the whitelist and the tab will be reloaded in HTTPS.`;
 		ui.whitelist.textContent = 'remove from whitelist';
 		ui.whitelist.onclick = e => {
 			ui.whitelist.disabled = true;
