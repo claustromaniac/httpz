@@ -8,6 +8,6 @@ It also gets along with the [Temporary Containers][TC] extension, which I recomm
 
 Known issues:
 - When the initial request over HTTPS results in an error, Firefox starts loading an internal page that describes the error. HTTPZ doesn't wait for Firefox to finish loading those error pages, it immediately retries the request over HTTP, which causes them to load partially, and it doesn't look good. This is only a cosmetic issue.
-- Unlike HTTPS Everywhere, this extension doesn't take care of requests to third parties triggered from HTTP sites. For now, it outright ignores those requests, because using the same approach with those (retrying on error) is very complicated and has significant drawbacks.
+- Unlike HTTPS Everywhere, this extension doesn't take care of sub-requests triggered from HTTP-only sites. For now, it outright ignores those requests, because using the same approach with those (retrying on error) is very complicated and has significant drawbacks.
 
 [TC]: https://addons.mozilla.org/firefox/addon/temporary-containers/
