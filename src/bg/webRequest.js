@@ -55,7 +55,7 @@ browser.webRequest.onBeforeRequest.addListener(d => {
 		!settings.whitelist[url.hostname] &&
 		url.hostname !== 'localhost' &&
 		url.hostname !== 'loopback' &&
-		!/^127\.\d+\.\d+\.\d+$/.test(url.hostname)
+		!/^1(?:(?:92\.168|(?:0|27|72)\.\d{1,3}))\.\d{1,3}\.\d{1,3}$/.test(url.hostname)
 	) {
 		processed.add(url.hostname);
 		stackCleaner.run();
