@@ -53,8 +53,7 @@ browser.webRequest.onBeforeRequest.addListener(d => {
 	if (
 		!settings.ignored[url.hostname] &&
 		!settings.whitelist[url.hostname] &&
-		url.hostname !== 'localhost' &&
-		url.hostname !== 'loopback' &&
+		url.hostname.includes('.') &&	// leave out loopback & private addresses
 		!/^1(?:(?:92\.168|(?:0|27|72)\.\d{1,3}))\.\d{1,3}\.\d{1,3}$/.test(url.hostname)
 	) {
 		processed.add(url.hostname);
