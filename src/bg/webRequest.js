@@ -29,7 +29,7 @@ function IPinRange(ip, min, max) {
 
 function isReservedAddress(str) {
 	const addr = str.split('.');
-	if (addr.length !== 4) return;
+	if (addr.length !== 4) return addr.length == 1; // no dots = loopback or the like
 	for (const part of addr) {
 		if (Number.isNaN(+part) || part < 0 || part > 255) return;
 	}
