@@ -20,6 +20,31 @@ const other_errors = new Set([
 
 /** ---------- Functions ---------- **/
 
+function IPinRange(ip, min, max) {
+	for (const i in ip) {
+		if (ip[i] < min[i] || ip[i] > max[i]) return;
+	}
+	return true;
+}
+
+function isReservedAddress(str) {
+	const addr = str.split('.');
+	if (addr.length !== 4) return;
+	for (const part of addr) {
+		if (Number.isNaN(+part) || part < 0 || part > 255) return;
+	}
+	return (
+		IPinRange(addr, [10,0,0,0], [10,255,255,255]) ||
+		IPinRange(addr, [100,64,0,0], [100,127,255,255]) ||
+		IPinRange(addr, [127,0,0,0], [127,255,255,255]) ||
+		IPinRange(addr, [169,254,0,0], [169,254,255,255]) ||
+		IPinRange(addr, [172,16,0,0], [172,31,255,255]) ||
+		IPinRange(addr, [192,0,0,0], [192,0,0,255]) ||
+		IPinRange(addr, [192,168,0,0], [192,168,255,255]) ||
+		IPinRange(addr, [198,18,0,0], [198,19,255,255])
+	);
+}
+
 function ignore(host) {
 	if (!settings.ignored[host]) {
 		settings.ignored[host] = Date.now();
@@ -53,8 +78,7 @@ browser.webRequest.onBeforeRequest.addListener(d => {
 	if (
 		!settings.ignored[url.hostname] &&
 		!settings.whitelist[url.hostname] &&
-		url.hostname.includes('.') &&	// leave out loopback & private addresses
-		!/^1(?:(?:92\.168|(?:0|27|72)\.\d{1,3}))\.\d{1,3}\.\d{1,3}$/.test(url.hostname)
+		!isReservedAddress(url.hostname)
 	) {
 		processed.add(url.hostname);
 		stackCleaner.run();
