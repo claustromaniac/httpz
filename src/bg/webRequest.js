@@ -9,14 +9,6 @@ const ignoredSaver = new DelayableAction(10, 60, () => {
 });
 const filter = {urls: ["http://*/*"], types: ['main_frame']};
 const sfilter = {urls: ["https://*/*"], types: ['main_frame']};
-const error_rx = /^SEC_ERROR|(?:_|\b)(?:SSL|TLS|CERT)(?:_|\b)|\b[Cc]ertificate/;
-const other_errors = new Set([
-	'MOZILLA_PKIX_ERROR_ADDITIONAL_POLICY_CONSTRAINT_FAILED',
-	'NS_ERROR_CONNECTION_REFUSED',
-	'NS_ERROR_NET_TIMEOUT',
-	'Peer reports it experienced an internal error.',
-	'Peer using unsupported version of security protocol.'
-]);
 
 /** ---------- Functions ---------- **/
 
@@ -112,10 +104,7 @@ browser.webRequest.onCompleted.addListener(d => {
 
 browser.webRequest.onErrorOccurred.addListener(d => {
 	const url = new URL(d.url);
-	if ( processed.has(url.hostname) && !settings.ignored[url.hostname] &&
-		( error_rx.test(d.error) || other_errors.has(d.error) )
-	) downgrade(url, d);
-	else console.info(`Error info: ${d.error}`);
+	if (processed.has(url.hostname) && !settings.ignored[url.hostname]) downgrade(url, d);
 }, sfilter);
 
 browser.webRequest.onErrorOccurred.addListener(d => {
