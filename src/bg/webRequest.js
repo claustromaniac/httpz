@@ -92,9 +92,7 @@ browser.webRequest.onBeforeRedirect.addListener(d => {
 
 browser.webRequest.onCompleted.addListener(d => {
 	const url = new URL(d.url);
-	if (!processed.has(url.hostname)) return;
-	if ( d.statusCode >= 400 && !settings.ignored[url.hostname] ) downgrade(url, d);
-	else browser.pageAction.show(d.tabId);
+	if (processed.has(url.hostname)) browser.pageAction.show(d.tabId);
 }, sfilter);
 
 browser.webRequest.onCompleted.addListener(d => {
