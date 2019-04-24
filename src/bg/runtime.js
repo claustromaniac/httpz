@@ -6,9 +6,15 @@ browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 	// triggered by popup script
 	if (msg.value) {
 		wlSaver.run();
-		return (async () => {return settings.whitelist[msg.host] = true;})();
+		return (async () => {
+			if (msg.value === 2) return settings.incognitoWhitelist[msg.host] = true;
+			return settings.whitelist[msg.host] = true;
+		})();
 	} else if (msg.host) {
 		wlSaver.run();
-		return (async () => {return delete settings.whitelist[msg.host];})();
+		return (async () => {
+			return delete settings.whitelist[msg.host] &&
+			delete settings.incognitoWhitelist[msg.host];
+		})();
 	}
 });

@@ -5,19 +5,34 @@
 		<link href="options.css" rel="stylesheet">
 	</head>
 	<body>
-		<p>Check again if a site supports HTTPS...</p>
-		<div class="browser-style fb">
-			<input id="session" name="period" type="radio"><label for="session">after Firefox is restarted</label>
-		</div>
-		<div class="browser-style fb">
-			<input id="xdays" name="period" type="radio"><label for="xdays">after
-			<input id="days" name="days" type="number" min=1 required> days</label>
-		</div>
-		<div class="browser-style fb">
-			<input id="permanent" name="period" type="radio"><label for="permanent">never</label>
-		</div><br>
-		<button class="browser-style" id="clear">Forget sites</button>
-		<button class="browser-style" id="save">Save</button><span class="hidden" id="status"></span>
+		<fieldset>
+			<p>Check again if a site supports HTTPS...</p>
+			<div class="browser-style fb">
+				<input id="session" name="period" type="radio"><label for="session">after Firefox is restarted</label>
+			</div>
+			<div class="browser-style fb">
+				<input id="xdays" name="period" type="radio"><label for="xdays">after
+				<input id="days" name="days" type="number" min=1 required> day(s)</label>
+			</div>
+			<div class="browser-style fb">
+				<input id="permanent" name="period" type="radio"><label for="permanent">never</label>
+			</div><br>
+			<button class="browser-style" id="clearIgnored">Forget ignored sites</button>
+		</fieldset><br>
+		<fieldset>
+			<p>When this is enabled, HTTPZ remembers the sites that load successfully over HTTPS and never tries to redirect those to HTTP if they fail in the future. This increases the extension's memory footprint over time, but minimizes the risk of a MitM being able to exploit its behavior.</p>
+			<div class="browser-style fb">
+				<input id="rememberSecureSites" type="checkbox"><label for="rememberSecureSites">
+					Remember secure sites
+				</label>
+			</div><br>
+			<button class="browser-style" id="clearSecure">Forget secure sites</button>
+		</fieldset><br>
+		<fieldset>
+			<p>Whitelisted hostnames (will always be ignored by HTTPZ)</p>
+			<textarea autocomplete="off" class="browser-style" id="whitelist" rows="10" spellcheck="false"></textarea>
+		</fieldset><br>
+		<button class="browser-style" id="save">Save</button>
 		<script src="options.js"></script>
 	</body>
 </html>

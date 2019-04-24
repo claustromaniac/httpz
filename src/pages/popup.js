@@ -10,12 +10,14 @@ browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
 		ui.whitelist.textContent = 'add to whitelist';
 		ui.whitelist.onclick = e => {
 			ui.whitelist.disabled = true;
-			browser.runtime.sendMessage({host: url.hostname, value: true}).then(() => {
-				url.protocol = 'http:';
-				browser.tabs.update(
-					tab.id,
-					{ loadReplace: true, url: url.toString() }
-				);
+			browser.windows.getLastFocused().then(w => {
+				browser.runtime.sendMessage({host: url.hostname, value: w.incognito ? 2 : 1}).then(() => {
+					url.protocol = 'http:';
+					browser.tabs.update(
+						tab.id,
+						{ loadReplace: true, url: url.toString() }
+					);
+				});
 			});
 		};
 	} else {

@@ -3,6 +3,9 @@ class Settings {
 		this.ignored = {}; // hostname:unixTimeStamp pairs
 		this.defaults = {
 			'ignorePeriod': 7, //-1 = permanent, 0 = session-only, 1+ = X days
+			'incognitoWhitelist': {},
+			'knownSecure': {},
+			'rememberSecureSites': true,
 			'whitelist': {}
 		};
 		this.loading = (async () => {

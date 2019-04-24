@@ -1,6 +1,13 @@
 * { box-sizing: border-box; }
 body { display: table; }
+code, fieldset, textarea { border-radius: 0.3em; }
+fieldset { width: 95vw; }
 button { margin-left: 0.25em; }
+textarea {
+	font-family: "Consolas";
+	font-weight: 100;
+	width: 100%;
+}
 #days {
 	background-color: #FFF;
 	color: #000;
@@ -17,16 +24,16 @@ button { margin-left: 0.25em; }
 	opacity: 0;
 	transition: opacity 500ms;
 }
-.shown { opacity: 1; }
-#status {
-	font-weight: 300;
-	margin-left: 1em;
+button[status-neutral]::after {
+	content: attr(status-neutral);
 }
-.saved {
+button[status-success]::after {
+	content: attr(status-success);
 	color: #021;
 	text-shadow: 0 0 0.2em #0F8;
 }
-.error {
+button[status-failure]::after {
+	content: attr(status-failure);
 	color: #300;
 	text-shadow: 0 0 0.2em #F00;
 }

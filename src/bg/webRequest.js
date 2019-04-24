@@ -37,6 +37,10 @@ function isReservedAddress(str) {
 	);
 }
 
+function isWhitelisted(host) {
+	return settings.whitelist[host] || settings.incognitoWhitelist[host];
+}
+
 function ignore(host) {
 	if (!settings.ignored[host]) {
 		settings.ignored[host] = Date.now();
@@ -67,11 +71,9 @@ browser.webRequest.onBeforeRequest.addListener(d => {
 			delete settings.ignored[url.hostname];
 		}
 	}
-	if (
-		!settings.ignored[url.hostname] &&
-		!settings.whitelist[url.hostname] &&
-		!isReservedAddress(url.hostname)
-	) {
+	if (isWhitelisted(url.hostname)) {
+		processed.delete(url.hostname);
+	} else if (!settings.ignored[url.hostname] && !isReservedAddress(url.hostname)) {
 		processed.add(url.hostname);
 		stackCleaner.run();
 		url.protocol = 'https:';
@@ -90,19 +92,34 @@ browser.webRequest.onBeforeRedirect.addListener(d => {
 	}
 }, sfilter);
 
+browser.webRequest.onBeforeRedirect.addListener(d => {
+	const newTarget = new URL(d.redirectUrl);
+	if (newTarget.protocol === 'https:') {
+		const url = new URL(d.url);
+		if (isWhitelisted(url.hostname)) processed.delete(url.hostname);
+		if (isWhitelisted(newTarget.hostname)) processed.delete(newTarget.hostname);
+	}
+}, filter);
+
 browser.webRequest.onCompleted.addListener(d => {
 	const url = new URL(d.url);
 	if (processed.has(url.hostname)) browser.pageAction.show(d.tabId);
+	if (settings.rememberSecureSites) settings.knownSecure[url.hostname] = true;
 }, sfilter);
 
 browser.webRequest.onCompleted.addListener(d => {
 	const url = new URL(d.url);
-	if (settings.whitelist[url.hostname]) browser.pageAction.show(d.tabId);
+	if (isWhitelisted(url.hostname)) browser.pageAction.show(d.tabId);
 }, filter);
 
 browser.webRequest.onErrorOccurred.addListener(d => {
 	const url = new URL(d.url);
-	if (processed.has(url.hostname) && !settings.ignored[url.hostname]) downgrade(url, d);
+	if (
+		processed.has(url.hostname) && (
+			!settings.rememberSecureSites ||
+			!settings.knownSecure[url.hostname]
+		)
+	) downgrade(url, d);
 }, sfilter);
 
 browser.webRequest.onErrorOccurred.addListener(d => {
