@@ -9,3 +9,8 @@ body {
 }
 p { font-weight: 100; }
 button { margin-left: 0.25em; }
+#incognito {
+	font-size: 1.1em;
+	font-weight: 700;
+	color: #166;
+}
