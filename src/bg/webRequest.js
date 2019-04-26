@@ -73,6 +73,7 @@ browser.webRequest.onBeforeRequest.addListener(d => {
 	}
 	if (isWhitelisted(url.hostname)) {
 		processed.delete(url.hostname);
+		browser.pageAction.show(d.tabId);
 	} else if (!settings.ignored[url.hostname] && !isReservedAddress(url.hostname)) {
 		processed.add(url.hostname);
 		stackCleaner.run();
