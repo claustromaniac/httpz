@@ -59,6 +59,12 @@ browser.runtime.sendMessage('options').then(msg => {
 			setStatus(ui.clearSecure, '✔', 'status-success');
 		});
 	};
+	ui.clearWhitelist.onclick = e => {
+		browser.storage.local.set({whitelist: {}, incognitoWhitelist: {}}).then(() => {
+			ui.whitelist.value = '';
+			setStatus(ui.clearWhitelist, '✔', 'status-success');
+		});
+	};
 	ui.save.onclick = e => {
 		const changes = Object.assign({}, msg);
 		if (ui.xdays.checked) {
