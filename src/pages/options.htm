@@ -20,7 +20,7 @@
 			<button class="browser-style" id="clearIgnored">Forget ignored sites</button>
 		</fieldset><br>
 		<fieldset>
-			<p>When this is enabled, HTTPZ remembers the sites that load successfully over HTTPS and never tries to redirect those to HTTP if they fail in the future. This increases the extension's memory footprint over time, but minimizes the risk of a <abbr title="Man in the Middle">MitM</abbr> being able to exploit its behavior.</p>
+			<p>Every time you navigate to a site that loads successfully over HTTPS, HTTPZ remembers it, so as to avoid redirecting it to HTTP if it ever fails in the future. This increases the extension's memory footprint over time, but minimizes the risk of a <abbr title="Man in the Middle">MitM</abbr> being able to exploit its behavior.</p>
 			<div class="browser-style fb">
 				<input id="rememberSecureSites" type="checkbox"><label for="rememberSecureSites">
 					Remember secure sites
