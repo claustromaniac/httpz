@@ -7,6 +7,9 @@ const stackCleaner = new DelayableAction(60, 120, () => {
 const ignoredSaver = new DelayableAction(10, 60, () => {
 	if (settings.ignorePeriod) browser.storage.local.set({ignored: settings.ignored});
 });
+const secureSaver = new DelayableAction(10, 60, () => {
+	browser.storage.local.set({knownSecure: settings.knownSecure});
+});
 const filter = {urls: ["http://*/*"], types: ['main_frame']};
 const sfilter = {urls: ["https://*/*"], types: ['main_frame']};
 
@@ -105,7 +108,10 @@ browser.webRequest.onBeforeRedirect.addListener(d => {
 browser.webRequest.onCompleted.addListener(d => {
 	const url = new URL(d.url);
 	if (processed.has(url.hostname)) browser.pageAction.show(d.tabId);
-	if (settings.rememberSecureSites) settings.knownSecure[url.hostname] = true;
+	if (settings.rememberSecureSites && !settings.knownSecure[url.hostname]) {
+		settings.knownSecure[url.hostname] = true;
+		secureSaver.run();
+	}
 }, sfilter);
 
 browser.webRequest.onCompleted.addListener(d => {
