@@ -3,6 +3,11 @@ body { display: table; }
 code, fieldset, textarea { border-radius: 0.3em; }
 fieldset { width: 95vw; }
 button, input, textarea, p { margin-left: 0.25em; }
+button {
+	margin-right: 0.5em;
+	margin-top: 1em;
+	padding: 0 0.75em;
+}
 textarea {
 	font-family: "Consolas";
 	font-weight: 100;
@@ -20,10 +25,6 @@ textarea {
 	flex-flow: row wrap;
 }
 .fb * { margin: auto inherit; }
-.hidden {
-	opacity: 0;
-	transition: opacity 500ms;
-}
 button[status-neutral]::after {
 	content: attr(status-neutral);
 }
@@ -36,4 +37,11 @@ button[status-failure]::after {
 	content: attr(status-failure);
 	color: #300;
 	text-shadow: 0 0 0.2em #F00;
+}
+input[type="file"] {display: none;}
+button label {margin: 0;}
+#fakeFileInput {padding: 0;}
+#save {
+	float: right;
+	font-weight: 700;
 }

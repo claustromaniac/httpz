@@ -16,7 +16,7 @@
 			</div>
 			<div class="browser-style fb">
 				<input id="permanent" name="period" type="radio"><label for="permanent">never</label>
-			</div><br>
+			</div>
 			<button class="browser-style" id="clearIgnored">Forget ignored sites</button>
 		</fieldset><br>
 		<fieldset>
@@ -25,14 +25,20 @@
 				<input id="rememberSecureSites" type="checkbox"><label for="rememberSecureSites">
 					Remember secure sites
 				</label>
-			</div><br>
+			</div>
 			<button class="browser-style" id="clearSecure">Forget secure sites</button>
 		</fieldset><br>
 		<fieldset>
 			<p>Whitelisted hostnames (will always be ignored by HTTPZ)</p>
-			<textarea autocomplete="off" class="browser-style" id="whitelist" rows="10" spellcheck="false"></textarea><br>
+			<textarea autocomplete="off" class="browser-style" id="whitelist" rows="10" spellcheck="false"></textarea>
 			<button class="browser-style" id="clearWhitelist">Clear whitelist</button>
 		</fieldset><br>
+		<button class="browser-style" id="export">Export</button>
+		<button class="browser-style" id="fakeFileInput">
+			<label>&nbsp;Import&nbsp;
+				<input type="file" accept=".json" id="import"></input>
+			</label>
+		</button>
 		<button class="browser-style" id="save">Save</button>
 		<script src="options.js"></script>
 	</body>

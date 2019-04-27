@@ -1,6 +1,8 @@
 'use strict';
 
 const ui = document.getElementsByTagName('*');
+const dlpermission = { permissions : ['downloads'] };
+let reader;
 
 function setStatus(button, msg, type) {
 	button.setAttribute(type, ` ${msg}`);
@@ -32,20 +34,33 @@ function parseWhitelist(str) {
 	return result;
 }
 
-browser.runtime.sendMessage('options').then(msg => {
-	ui.session.checked = !msg.ignorePeriod;
-	ui.xdays.checked = msg.ignorePeriod > 0;
+function refreshUI(data) {
+	ui.session.checked = !data.ignorePeriod;
+	ui.xdays.checked = data.ignorePeriod > 0;
 	ui.days.disabled = !ui.xdays.checked;
-	ui.permanent.checked = msg.ignorePeriod === -1;
-	if (ui.xdays.checked) ui.days.value = msg.ignorePeriod;
+	ui.permanent.checked = data.ignorePeriod === -1;
+	if (ui.xdays.checked) ui.days.value = data.ignorePeriod;
+	ui.rememberSecureSites.checked = data.rememberSecureSites;
+	ui.whitelist.value = populateWhitelist(data.whitelist);
+}
+
+function exportSettings() {
+	browser.storage.local.get().then(r => {
+		browser.downloads.download({
+			saveAs : true,
+			url : URL.createObjectURL(new Blob([JSON.stringify(r, null, '\t')])),
+			filename : `HTTPZ_backup-${new Date().toISOString().replace(/.*?(\d.*\d).*/, '$1').replace(/\D/g, '.')}.json`
+		});
+	});
+}
+
+browser.runtime.sendMessage('options').then(msg => {
 	const changePeriod = e => {
 		ui.days.disabled = !ui.xdays.checked;
 		if (ui.xdays.checked) {
 			ui.days.value = msg.ignorePeriod > 0 ? msg.ignorePeriod : 1;
 		}
 	};
-	ui.rememberSecureSites.checked = msg.rememberSecureSites;
-	ui.whitelist.value = populateWhitelist(msg.whitelist);
 	ui.session.onchange = changePeriod;
 	ui.xdays.onchange = changePeriod;
 	ui.permanent.onchange = changePeriod;
@@ -58,6 +73,25 @@ browser.runtime.sendMessage('options').then(msg => {
 		browser.storage.local.set({knownSecure: {}}).then(() => {
 			setStatus(ui.clearSecure, '✔', 'status-success');
 		});
+	};
+	ui.clearWhitelist.onclick = e => {
+		browser.storage.local.set({whitelist: {}, incognitoWhitelist: {}}).then(() => {
+			ui.whitelist.value = '';
+			setStatus(ui.clearWhitelist, '✔', 'status-success');
+		});
+	};
+	ui.import.onchange = e => {
+		if (!reader) reader = new FileReader();
+		reader.onloadend = () => {
+			try {
+				const data = JSON.parse(reader.result);
+				if (data.ignorePeriod) {
+					browser.storage.local.set(data);
+					refreshUI(data);
+				} else throw 'SyntaxError';
+			} catch {alert('Error. Invalid file (?)')};
+		};
+		reader.readAsText(ui.import.files[0]);
 	};
 	ui.clearWhitelist.onclick = e => {
 		browser.storage.local.set({whitelist: {}, incognitoWhitelist: {}}).then(() => {
@@ -84,4 +118,14 @@ browser.runtime.sendMessage('options').then(msg => {
 			setStatus(ui.save, '✔', 'status-success');
 		});
 	};
+	browser.permissions.contains(dlpermission).then(r => {
+		if (r) ui.export.onclick = e => {exportSettings()};
+		else ui.export.onclick = async e => {
+			if (await browser.permissions.request(dlpermission)) {
+				exportSettings();
+				ui.export.onclick = e => {exportSettings()};
+			}
+		};
+	});
+	refreshUI(msg);
 });
