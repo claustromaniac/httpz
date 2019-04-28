@@ -1,5 +1,8 @@
 const wlSaver = new DelayableAction(10, 60, () => {
-	browser.storage.local.set({whitelist: settings.whitelist});
+	browser.storage.local.set({
+		whitelist: settings.whitelist,
+		incognitoWhitelist: settings.incognitoWhitelist
+	});
 });
 browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 	if (msg === 'options') return settings.all; // triggered by options page script
