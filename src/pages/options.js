@@ -85,7 +85,7 @@ browser.runtime.sendMessage('options').then(msg => {
 		reader.onloadend = () => {
 			try {
 				const data = JSON.parse(reader.result);
-				if (data.ignorePeriod) {
+				if (data.hasOwnProperty('ignorePeriod')) {
 					browser.storage.local.set(data);
 					refreshUI(data);
 				} else throw 'SyntaxError';
