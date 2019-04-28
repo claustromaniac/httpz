@@ -57,9 +57,7 @@ function exportSettings() {
 browser.runtime.sendMessage('options').then(msg => {
 	const changePeriod = e => {
 		ui.days.disabled = !ui.xdays.checked;
-		if (ui.xdays.checked) {
-			ui.days.value = msg.ignorePeriod > 0 ? msg.ignorePeriod : 1;
-		}
+		if (!ui.days.value) ui.days.value = 7;
 	};
 	ui.session.onchange = changePeriod;
 	ui.xdays.onchange = changePeriod;
