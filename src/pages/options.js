@@ -98,7 +98,7 @@ browser.runtime.sendMessage('options').then(msg => {
 		});
 	};
 	ui.save.onclick = e => {
-		const changes = Object.assign({}, msg);
+		const changes = {};
 		if (ui.xdays.checked) {
 			if (!/^[1-9][0-9]*$/.test(ui.days.value.toString())) {
 				setStatus(ui.save, '❌', 'status-failure');
