@@ -41,7 +41,7 @@ function isReservedAddress(str) {
 }
 
 function isWhitelisted(host) {
-	return settings.whitelist[host] || settings.incognitoWhitelist[host];
+	return settings.whitelist.hasOwnProperty(host) || settings.incognitoWhitelist.hasOwnProperty(host);
 }
 
 function ignore(host) {
@@ -74,10 +74,11 @@ browser.webRequest.onBeforeRequest.addListener(d => {
 			delete settings.ignored[url.hostname];
 		}
 	}
-	if (isWhitelisted(url.hostname)) {
-		processed.delete(url.hostname);
-		browser.pageAction.show(d.tabId);
-	} else if (!settings.ignored[url.hostname] && !isReservedAddress(url.hostname)) {
+	if (
+		!settings.ignored[url.hostname] &&
+		!isWhitelisted(url.hostname) &&
+		!isReservedAddress(url.hostname)
+	) {
 		processed.add(url.hostname);
 		stackCleaner.run();
 		url.protocol = 'https:';
@@ -108,8 +109,8 @@ browser.webRequest.onBeforeRedirect.addListener(d => {
 browser.webRequest.onCompleted.addListener(d => {
 	const url = new URL(d.url);
 	if (processed.has(url.hostname)) browser.pageAction.show(d.tabId);
-	if (settings.rememberSecureSites && !settings.knownSecure[url.hostname]) {
-		settings.knownSecure[url.hostname] = true;
+	if (settings.rememberSecureSites && !settings.knownSecure.hasOwnProperty(url.hostname)) {
+		settings.knownSecure[url.hostname] = null;
 		secureSaver.run();
 	}
 }, sfilter);
@@ -124,12 +125,13 @@ browser.webRequest.onErrorOccurred.addListener(d => {
 	if (
 		processed.has(url.hostname) && (
 			!settings.rememberSecureSites ||
-			!settings.knownSecure[url.hostname]
+			!settings.knownSecure.hasOwnProperty(url.hostname)
 		)
 	) downgrade(url, d);
 }, sfilter);
 
 browser.webRequest.onErrorOccurred.addListener(d => {
+	const url = new URL(d.url);
 	if (settings.ignored[url.hostname] && processed.has(url.hostname)) {
 		delete settings.ignored[url.hostname];
 	}

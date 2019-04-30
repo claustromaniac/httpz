@@ -29,7 +29,7 @@ function populateWhitelist(obj) {
 function parseWhitelist(str) {
 	const result = {};
 	str.split(/[\s,]+/).forEach(e => {
-		if (e.length) result[e] = true;
+		if (e.length) result[e] = null;
 	});
 	return result;
 }
