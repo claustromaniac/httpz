@@ -10,8 +10,8 @@ browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 	if (msg.value) {
 		wlSaver.run();
 		return (async () => {
-			if (msg.value === 2) return settings.incognitoWhitelist[msg.host] = true;
-			return settings.whitelist[msg.host] = true;
+			if (msg.value === 2) return settings.incognitoWhitelist[msg.host] = null;
+			return settings.whitelist[msg.host] = null;
 		})();
 	} else if (msg.host) {
 		wlSaver.run();
