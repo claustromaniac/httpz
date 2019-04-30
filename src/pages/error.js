@@ -2,8 +2,7 @@
 
 const ui = document.getElementsByTagName('*');
 
-browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
-	const tab = tabs[0];
+browser.tabs.getCurrent().then(tab => {
 	const url = new URL(tab.url);
 	const target = new URL(url.searchParams.get('target'));
 	ui.hostname.textContent = target.hostname;
