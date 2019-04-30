@@ -19,5 +19,8 @@ browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 			return delete settings.whitelist[msg.host] &&
 			delete settings.incognitoWhitelist[msg.host];
 		})();
+	} else if (msg.ignore) {
+		ignore(msg.ignore);
+		return (async () => {return true})();
 	}
 });

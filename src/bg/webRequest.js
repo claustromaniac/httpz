@@ -122,12 +122,17 @@ browser.webRequest.onCompleted.addListener(d => {
 
 browser.webRequest.onErrorOccurred.addListener(d => {
 	const url = new URL(d.url);
-	if (
-		processed.has(url.hostname) && (
+	if (processed.has(url.hostname)) {
+		if (!settings.autoDowngrade) {
+			browser.tabs.update(d.tabId, {
+				loadReplace: true,
+				url: `${warningPage}?target=${d.url}`
+			});
+		} else if (
 			!settings.rememberSecureSites ||
 			!settings.knownSecure.hasOwnProperty(url.hostname)
-		)
-	) downgrade(url, d);
+		) downgrade(url, d);
+	}
 }, sfilter);
 
 browser.webRequest.onErrorOccurred.addListener(d => {

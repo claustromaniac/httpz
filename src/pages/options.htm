@@ -6,6 +6,22 @@
 	</head>
 	<body>
 		<fieldset>
+			<p>By default, HTTPZ will fall back to HTTP automatically on error, but if you disable this, you will be shown a warning instead, so you can decide how to proceed.</p>
+			<div class="browser-style fb">
+				<input id="autoDowngrade" type="checkbox"><label for="autoDowngrade">
+					Automatic mode
+				</label>
+			</div><br>
+			<hr>
+			<p>Every time you navigate to a site that loads successfully over HTTPS, HTTPZ remembers its hostname, so as to avoid redirecting it to HTTP if it ever fails in the future. This minimizes the risk of a <abbr title="Man in the Middle">MitM</abbr> being able to exploit the extension's behavior.</p>
+			<p>Note: this is only useful in automatic mode.</p>
+			<div class="browser-style fb">
+				<input id="rememberSecureSites" type="checkbox"><label for="rememberSecureSites">
+					Remember secure sites
+				</label>
+			</div>
+			<button class="browser-style" id="clearSecure">Forget secure sites</button><br>
+			<hr>
 			<p>Check again if a site supports HTTPS...</p>
 			<div class="browser-style fb">
 				<input id="session" name="period" type="radio"><label for="session">after Firefox is restarted</label>
@@ -17,18 +33,8 @@
 			<div class="browser-style fb">
 				<input id="permanent" name="period" type="radio"><label for="permanent">never</label>
 			</div>
-			<button class="browser-style" id="clearIgnored">Forget ignored sites</button>
-		</fieldset><br>
-		<fieldset>
-			<p>Every time you navigate to a site that loads successfully over HTTPS, HTTPZ remembers its hostname, so as to avoid redirecting it to HTTP if it ever fails in the future. This minimizes the risk of a <abbr title="Man in the Middle">MitM</abbr> being able to exploit the extension's behavior.</p>
-			<div class="browser-style fb">
-				<input id="rememberSecureSites" type="checkbox"><label for="rememberSecureSites">
-					Remember secure sites
-				</label>
-			</div>
-			<button class="browser-style" id="clearSecure">Forget secure sites</button>
-		</fieldset><br>
-		<fieldset>
+			<button class="browser-style" id="clearIgnored">Forget ignored sites</button><br>
+			<hr>
 			<p>Whitelisted hostnames (will always be ignored by HTTPZ)</p>
 			<textarea autocomplete="off" class="browser-style" id="whitelist" rows="10" spellcheck="false"></textarea>
 			<button class="browser-style" id="clearWhitelist">Clear whitelist</button>
