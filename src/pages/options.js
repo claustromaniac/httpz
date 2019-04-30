@@ -35,6 +35,7 @@ function parseWhitelist(str) {
 }
 
 function refreshUI(data) {
+	ui.autoDowngrade.checked = data.autoDowngrade;
 	ui.session.checked = !data.ignorePeriod;
 	ui.xdays.checked = data.ignorePeriod > 0;
 	ui.days.disabled = !ui.xdays.checked;
@@ -109,6 +110,7 @@ browser.runtime.sendMessage('options').then(msg => {
 			changes.ignorePeriod = 0;
 			changes.ignored = {};
 		} else changes.ignorePeriod = -1;
+		changes.autoDowngrade = ui.autoDowngrade.checked;
 		changes.whitelist = parseWhitelist(ui.whitelist.value);
 		changes.rememberSecureSites = ui.rememberSecureSites.checked;
 		setStatus(ui.save, '⭕', 'status-neutral');

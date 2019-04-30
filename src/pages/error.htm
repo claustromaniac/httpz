@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link href="error.css" rel="stylesheet">
+	</head>
+	<body>
+		<div>
+			<img src="../assets/httpz.svg"><img>
+			<p>HTTPZ tried to load <code id="hostname">(hostname)</code> over HTTPS, but this resulted in an error.</p>
+			<p>Errors are expected when servers do not support the protocol, or when there are network issues, but they could also mean that an intermediary is trying to exploit this extension to perform a Man-in-the-Middle attack against you.</p>
+			<p>Proceed at your own discretion.</p>
+			<button id="continue">Proceed over HTTP</button>
+		</div>
+		<script src="error.js"></script>
+	</body>
+</html>
