@@ -49,6 +49,7 @@ function ignore(host) {
 		settings.ignored[host] = Date.now();
 		if (settings.ignorePeriod) ignoredSaver.run();
 	}
+	delete settings.knownSecure[host];
 }
 
 function downgrade(url, d) {
@@ -89,20 +90,22 @@ browser.webRequest.onBeforeRequest.addListener(d => {
 browser.webRequest.onBeforeRedirect.addListener(d => {
 	const url = new URL(d.url);
 	const newTarget = new URL(d.redirectUrl);
-	if (url.hostname === newTarget.hostname) {
-		if (newTarget.protocol === 'http:') ignore(url.hostname);
-	} else if (processed.has(url.hostname)) {
+	if (newTarget.protocol === 'http:') ignore(url.hostname);
+	else if (processed.has(url.hostname)) {
 		processed.add(newTarget.hostname);
 		stackCleaner.run();
 	}
 }, sfilter);
 
 browser.webRequest.onBeforeRedirect.addListener(d => {
+	const url = new URL(d.url);
 	const newTarget = new URL(d.redirectUrl);
 	if (newTarget.protocol === 'https:') {
-		const url = new URL(d.url);
 		if (isWhitelisted(url.hostname)) processed.delete(url.hostname);
 		if (isWhitelisted(newTarget.hostname)) processed.delete(newTarget.hostname);
+	} else {
+		processed.add(newTarget.hostname);
+		stackCleaner.run();
 	}
 }, filter);
 
