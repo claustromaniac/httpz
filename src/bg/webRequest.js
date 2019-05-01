@@ -10,6 +10,10 @@ const ignoredSaver = new DelayableAction(10, 60, () => {
 const secureSaver = new DelayableAction(10, 60, () => {
 	browser.storage.local.set({knownSecure: settings.knownSecure});
 });
+const exceptions = new Set([
+	'NS_BINDING_ABORTED',
+	'NS_ERROR_UNKNOWN_HOST'
+]);
 const filter = {urls: ["http://*/*"], types: ['main_frame']};
 const sfilter = {urls: ["https://*/*"], types: ['main_frame']};
 
@@ -124,8 +128,9 @@ browser.webRequest.onCompleted.addListener(d => {
 }, filter);
 
 browser.webRequest.onErrorOccurred.addListener(d => {
+	console.info(`HTTPZ: ${d.error}`);
 	const url = new URL(d.url);
-	if (processed.has(url.hostname)) {
+	if (processed.has(url.hostname) && !exceptions.has(d.error)) {
 		if (!settings.autoDowngrade) {
 			browser.tabs.update(d.tabId, {
 				loadReplace: true,
