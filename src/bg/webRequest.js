@@ -1,7 +1,7 @@
 'use strict';
 
 const processed = new Set();
-const stackCleaner = new DelayableAction(60, 120, () => {
+const stackCleaner = new DelayableAction(100, 300, () => {
 	processed.clear();
 });
 const ignoredSaver = new DelayableAction(10, 60, () => {
