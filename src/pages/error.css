@@ -3,18 +3,25 @@
 	text-align: center;
 }
 body {
-	display: table;
 	background: #444;
 	color: #FFF;
 	font-family: "Consolas";
+	font-size: 1.5vw;
 	font-weight: 100;
 }
 button {
-	margin-right: 0.5em;
+	border-radius: 0.3em;
+	font-size: 1.5vw;
 	margin-top: 1em;
 	padding: 0 0.75em;
-	margin-left: 0.25em;
-	border-radius: 0.3em;
 }
-div {margin: 15% 15%;}
+div {
+	margin: 15% auto 0;
+	width: 75%;
+}
 code {color: #6CF;}
+img {
+	margin: auto;
+	width: 5em;
+	display: block;
+}
