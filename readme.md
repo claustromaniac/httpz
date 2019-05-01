@@ -1,13 +1,23 @@
-There are numerous similar extensions out there, but HTTPZ is different because it is not smart: it is Zmart. Here is how it works:
-- When you are about to visit a site over HTTP, that request is aborted and a new one is started over HTTPS. If that request results in an error related to HTTPS (not just any kind of error), it is automatically redirected back to HTTP, and all subsequent requests to that host are ignored by the extension for the rest of the session (until Firefox is restarted). Since `0.6.0` this period can be customized.
-- When you visit a site over HTTPS and *the servers* redirect you to HTTP, the extension notices that and automatically adds that hostname to the list of sites to ignore.
+There are numerous similar extensions out there, but HTTPZ is different because it is not smart: it is Zmart. The following summarizes how it works with the default settings:
+- When you are about to navigate to a site over HTTP, that request is aborted and a new one is started over HTTPS. If that new request results in an error, it is automatically redirected back to HTTP. Then, if navigating to the site over HTTP throws an error too, HTTPZ does not do anything more. Otherwise, if it succeeds, the host is added to the ignore list, and all subsequent requests to it are ignored by the extension for seven days.
+- When you navigate to a site over HTTPS by yourself, or because of some external factor (like Firefox filling the address with https:// based on your history and so on), HTTPZ ignores that request, regardless of the outcome.
+- When you navigate to a site over HTTPS and *the servers* redirect you to HTTP, the extension notices this and automatically adds that hostname to the list of sites to ignore.
 
 HTTPZ is meant to be unobtrusive and lightweight, it respects your privacy, and it is free of trans fats.
 
 It also gets along with the [Temporary Containers][TC] extension, which I recommend.
 
-Known issues:
-- When the initial request over HTTPS results in an error, Firefox starts loading an internal page that describes the error. HTTPZ doesn't wait for Firefox to finish loading those error pages, it immediately retries the request over HTTP, which causes them to load partially, and it doesn't look good. This is only a cosmetic issue.
-- Unlike HTTPS Everywhere, this extension doesn't take care of sub-requests triggered from HTTP-only sites. For now, it outright ignores those requests, because using the same approach with those (retrying on error) is very complicated and has significant drawbacks.
+Known issues
+------------
+- When the initial request over HTTPS results in an error, Firefox starts loading an internal page that describes the error. HTTPZ does not wait for Firefox to finish loading those error pages, it immediately retries the request over HTTP, which causes them to load partially, and it does not look good. This is only a cosmetic issue, and a negligible one at that.
+- Unlike HTTPS Everywhere, this extension does not take care of sub-requests triggered from HTTP-only sites. For now, it outright ignores those requests, because using the same approach with those (retrying on error) is very complicated and has significant drawbacks.
+
+Interested in more recommendations? Head over to the [ghacks-user.js][user.js] GitHub repository. It is an amazing project for hardening Firefox that I am proud to have contributed to, and a great source of information (including extension recommendations).
+
+Acknowledgments
+---------------
+HTTPZ would not be what it is if not for [its testers' feedback on GitHub][issues].
 
 [TC]: https://addons.mozilla.org/firefox/addon/temporary-containers/
+[user.js]: https://github.com/ghacksuserjs/ghacks-user.js
+[issues]: https://github.com/claustromaniac/httpz/issues
