@@ -1,0 +1,29 @@
+* {
+	box-sizing: border-box;
+	text-align: center;
+}
+body {
+	background: #444;
+	color: #FFF;
+	font-family: "Consolas";
+	font-size: 1.5vw;
+	font-weight: 100;
+}
+button {
+	background: #FFF;
+	border-radius: 0.3em;
+	color: #000;
+	font-size: 1.5vw;
+	margin-top: 1em;
+	padding: 0 0.75em;
+}
+div {
+	margin: 15% auto 0;
+	width: 75%;
+}
+code {color: #6CF;}
+img {
+	margin: auto;
+	width: 5em;
+	display: block;
+}

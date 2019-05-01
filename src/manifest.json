@@ -2,7 +2,7 @@
 	"applications": {
 		"gecko": {
 			"id": "httpz@cm.org",
-			"strict_min_version": "57.0"
+			"strict_min_version": "60.0"
 		}
 	},
 	"background": {
@@ -19,6 +19,7 @@
 	"icons": {"64": "assets/httpz.svg"},
 	"manifest_version": 2,
 	"name": "HTTPZ",
+	"optional_permissions": ["downloads"],
 	"options_ui": {
 		"browser_style": true,
 		"page": "pages/options.htm"
@@ -36,5 +37,5 @@
 		"webRequestBlocking",
 		"<all_urls>"
 	],
-	"version": "0.6.2"
+	"version": "0.7.1"
 }

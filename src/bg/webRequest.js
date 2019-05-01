@@ -7,16 +7,11 @@ const stackCleaner = new DelayableAction(60, 120, () => {
 const ignoredSaver = new DelayableAction(10, 60, () => {
 	if (settings.ignorePeriod) browser.storage.local.set({ignored: settings.ignored});
 });
+const secureSaver = new DelayableAction(10, 60, () => {
+	browser.storage.local.set({knownSecure: settings.knownSecure});
+});
 const filter = {urls: ["http://*/*"], types: ['main_frame']};
 const sfilter = {urls: ["https://*/*"], types: ['main_frame']};
-const error_rx = /^SEC_ERROR|(?:_|\b)(?:SSL|TLS|CERT)(?:_|\b)|\b[Cc]ertificate/;
-const other_errors = new Set([
-	'MOZILLA_PKIX_ERROR_ADDITIONAL_POLICY_CONSTRAINT_FAILED',
-	'NS_ERROR_CONNECTION_REFUSED',
-	'NS_ERROR_NET_TIMEOUT',
-	'Peer reports it experienced an internal error.',
-	'Peer using unsupported version of security protocol.'
-]);
 
 /** ---------- Functions ---------- **/
 
@@ -45,11 +40,16 @@ function isReservedAddress(str) {
 	);
 }
 
+function isWhitelisted(host) {
+	return settings.whitelist.hasOwnProperty(host) || settings.incognitoWhitelist.hasOwnProperty(host);
+}
+
 function ignore(host) {
 	if (!settings.ignored[host]) {
 		settings.ignored[host] = Date.now();
 		if (settings.ignorePeriod) ignoredSaver.run();
 	}
+	delete settings.knownSecure[host];
 }
 
 function downgrade(url, d) {
@@ -77,7 +77,7 @@ browser.webRequest.onBeforeRequest.addListener(d => {
 	}
 	if (
 		!settings.ignored[url.hostname] &&
-		!settings.whitelist[url.hostname] &&
+		!isWhitelisted(url.hostname) &&
 		!isReservedAddress(url.hostname)
 	) {
 		processed.add(url.hostname);
@@ -90,35 +90,56 @@ browser.webRequest.onBeforeRequest.addListener(d => {
 browser.webRequest.onBeforeRedirect.addListener(d => {
 	const url = new URL(d.url);
 	const newTarget = new URL(d.redirectUrl);
-	if (url.hostname === newTarget.hostname) {
-		if (newTarget.protocol === 'http:') ignore(url.hostname);
-	} else if (processed.has(url.hostname)) {
+	if (newTarget.protocol === 'http:') ignore(url.hostname);
+	else if (processed.has(url.hostname)) {
 		processed.add(newTarget.hostname);
 		stackCleaner.run();
 	}
 }, sfilter);
 
+browser.webRequest.onBeforeRedirect.addListener(d => {
+	const url = new URL(d.url);
+	const newTarget = new URL(d.redirectUrl);
+	if (newTarget.protocol === 'https:') {
+		if (isWhitelisted(url.hostname)) processed.delete(url.hostname);
+		if (isWhitelisted(newTarget.hostname)) processed.delete(newTarget.hostname);
+	} else {
+		processed.add(newTarget.hostname);
+		stackCleaner.run();
+	}
+}, filter);
+
 browser.webRequest.onCompleted.addListener(d => {
 	const url = new URL(d.url);
-	if (!processed.has(url.hostname)) return;
-	if ( d.statusCode >= 400 && !settings.ignored[url.hostname] ) downgrade(url, d);
-	else browser.pageAction.show(d.tabId);
+	if (processed.has(url.hostname)) browser.pageAction.show(d.tabId);
+	if (settings.rememberSecureSites && !settings.knownSecure.hasOwnProperty(url.hostname)) {
+		settings.knownSecure[url.hostname] = null;
+		secureSaver.run();
+	}
 }, sfilter);
 
 browser.webRequest.onCompleted.addListener(d => {
 	const url = new URL(d.url);
-	if (settings.whitelist[url.hostname]) browser.pageAction.show(d.tabId);
+	if (isWhitelisted(url.hostname)) browser.pageAction.show(d.tabId);
 }, filter);
 
 browser.webRequest.onErrorOccurred.addListener(d => {
 	const url = new URL(d.url);
-	if ( processed.has(url.hostname) && !settings.ignored[url.hostname] &&
-		( error_rx.test(d.error) || other_errors.has(d.error) )
-	) downgrade(url, d);
-	else console.info(`Error info: ${d.error}`);
+	if (processed.has(url.hostname)) {
+		if (!settings.autoDowngrade) {
+			browser.tabs.update(d.tabId, {
+				loadReplace: true,
+				url: `${warningPage}?target=${d.url}`
+			});
+		} else if (
+			!settings.rememberSecureSites ||
+			!settings.knownSecure.hasOwnProperty(url.hostname)
+		) downgrade(url, d);
+	}
 }, sfilter);
 
 browser.webRequest.onErrorOccurred.addListener(d => {
+	const url = new URL(d.url);
 	if (settings.ignored[url.hostname] && processed.has(url.hostname)) {
 		delete settings.ignored[url.hostname];
 	}
