@@ -80,16 +80,18 @@ browser.runtime.sendMessage('options').then(msg => {
 		});
 	};
 	ui.import.onchange = e => {
-		if (!reader) reader = new FileReader();
-		reader.onloadend = () => {
-			try {
-				const data = JSON.parse(reader.result);
-				if (data.hasOwnProperty('ignorePeriod')) {
-					browser.storage.local.set(data);
-					refreshUI(data);
-				} else throw 'SyntaxError';
-			} catch {alert('Error. Invalid file (?)')};
-		};
+		if (!reader) {
+			reader = new FileReader();
+			reader.onloadend = () => {
+				try {
+					const data = JSON.parse(reader.result);
+					if (data.hasOwnProperty('ignorePeriod')) {
+						browser.storage.local.set(data);
+						refreshUI(data);
+					} else throw 'SyntaxError';
+				} catch {alert('Error. Invalid file (?)')};
+			};
+		}
 		reader.readAsText(ui.import.files[0]);
 	};
 	ui.clearWhitelist.onclick = e => {
