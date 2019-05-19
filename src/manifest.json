@@ -7,8 +7,7 @@
 	},
 	"background": {
 		"scripts": [
-			"bg/classes.js",
-			"bg/globals.js",
+			"bg/main.js",
 			"bg/webRequest.js",
 			"bg/runtime.js"
 		]

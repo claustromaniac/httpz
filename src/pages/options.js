@@ -1,5 +1,6 @@
 'use strict';
 
+const local = browser.storage.local;
 const ui = document.getElementsByTagName('*');
 const dlpermission = { permissions : ['downloads'] };
 let reader;
@@ -46,7 +47,7 @@ function refreshUI(data) {
 }
 
 function exportSettings() {
-	browser.storage.local.get().then(r => {
+	local.get().then(r => {
 		browser.downloads.download({
 			saveAs : true,
 			url : URL.createObjectURL(new Blob([JSON.stringify(r, null, '\t')])),
@@ -64,17 +65,17 @@ browser.runtime.sendMessage('options').then(msg => {
 	ui.xdays.onchange = changePeriod;
 	ui.permanent.onchange = changePeriod;
 	ui.clearIgnored.onclick = e => {
-		browser.storage.local.set({ignored: {}}).then(() => {
+		local.set({ignored: {}}).then(() => {
 			setStatus(ui.clearIgnored, '✔', 'status-success');
 		});
 	};
 	ui.clearSecure.onclick = e => {
-		browser.storage.local.set({knownSecure: {}}).then(() => {
+		local.set({knownSecure: {}}).then(() => {
 			setStatus(ui.clearSecure, '✔', 'status-success');
 		});
 	};
 	ui.clearWhitelist.onclick = e => {
-		browser.storage.local.set({whitelist: {}, incognitoWhitelist: {}}).then(() => {
+		local.set({whitelist: {}, incognitoWhitelist: {}}).then(() => {
 			ui.whitelist.value = '';
 			setStatus(ui.clearWhitelist, '✔', 'status-success');
 		});
@@ -86,7 +87,7 @@ browser.runtime.sendMessage('options').then(msg => {
 				try {
 					const data = JSON.parse(reader.result);
 					if (data.hasOwnProperty('ignorePeriod')) {
-						browser.storage.local.set(data);
+						local.set(data);
 						refreshUI(data);
 					} else throw 'SyntaxError';
 				} catch {alert('Error. Invalid file (?)')};
@@ -95,7 +96,7 @@ browser.runtime.sendMessage('options').then(msg => {
 		reader.readAsText(ui.import.files[0]);
 	};
 	ui.clearWhitelist.onclick = e => {
-		browser.storage.local.set({whitelist: {}, incognitoWhitelist: {}}).then(() => {
+		local.set({whitelist: {}, incognitoWhitelist: {}}).then(() => {
 			ui.whitelist.value = '';
 			setStatus(ui.clearWhitelist, '✔', 'status-success');
 		});
@@ -116,7 +117,7 @@ browser.runtime.sendMessage('options').then(msg => {
 		changes.whitelist = parseWhitelist(ui.whitelist.value);
 		changes.rememberSecureSites = ui.rememberSecureSites.checked;
 		setStatus(ui.save, '⭕', 'status-neutral');
-		browser.storage.local.set(changes).then(() => {
+		local.set(changes).then(() => {
 			setStatus(ui.save, '✔', 'status-success');
 		});
 	};
