@@ -23,7 +23,7 @@ class Settings {
 					if (changes[i].hasOwnProperty('newValue')) this[i] = changes[i].newValue;
 					else if (changes[i].hasOwnProperty('oldValue')) delete this[i];
 				}
-				if (changes.ignorePeriod) data.set({ignored: this.ignored});
+				if (changes.ignorePeriod) data.set({ignored: changes.ignorePeriod.newValue? this.ignored : {}});
 			});
 			console.log('HTTPZ: settings loaded');
 			delete this.loading;
