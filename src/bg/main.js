@@ -58,10 +58,10 @@ const sAPI = {
 		return res;
 	},
 	init() {
-		if (!this.ignorePeriod && this.idleListener) {
+		if (this.ignorePeriod < 1 && this.idleListener) {
 			browser.idle.onStateChanged.removeListener(this.idleListener);
 			delete this.idleListener;
-		} else if (this.ignorePeriod && !this.idleListener) {
+		} else if (this.ignorePeriod > 0 && !this.idleListener) {
 			this.idleListener = browser.idle.onStateChanged.addListener(state => {
 				if (state === 'active') return;
 				let count = 0;
