@@ -30,6 +30,7 @@
 		"default_title": "HTTPZ"
 	},
 	"permissions": [
+		"idle",
 		"storage",
 		"tabs",
 		"webRequest",

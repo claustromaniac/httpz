@@ -56,6 +56,24 @@ const sAPI = {
 		const res = {};
 		for (const i in this.defaults) res[i] = this[i];
 		return res;
+	},
+	init() {
+		if (!this.ignorePeriod && this.idleListener) {
+			browser.idle.onStateChanged.removeListener(this.idleListener);
+			delete this.idleListener;
+		} else if (this.ignorePeriod && !this.idleListener) {
+			this.idleListener = browser.idle.onStateChanged.addListener(state => {
+				if (state === 'active') return;
+				let count = 0;
+				for (const i in this.ignored) {
+					if (!isIgnored(i)) count++;
+				}
+				if (count) {
+					console.log(`HTTPZ: removed ${count} expired item(s) from the ignore list`);
+					ignoredSaver.run();
+				}
+			});
+		}
 	}
 };
 
@@ -66,19 +84,26 @@ sAPI.loading = (async () => {
 	if (sAPI.ignorePeriod) await local.get().then(r => {
 		if (r.ignored) sAPI.ignored = r.ignored;
 	});
+	sAPI.init();
+	console.log('HTTPZ: settings loaded');
+	delete sAPI.loading;
+})();
+
+sAPI.loading.then(() => {
 	browser.storage.onChanged.addListener((changes, area) => {
 		console.debug(`HTTPZ: ${area} storage changed`);
 		for (const i in changes) {
 			if (changes[i].hasOwnProperty('newValue')) sAPI[i] = changes[i].newValue;
 			else if (changes[i].hasOwnProperty('oldValue')) delete sAPI[i];
 		}
-		if (changes.ignorePeriod) local.set({
-			ignored: changes.ignorePeriod.newValue ? sAPI.ignored : {}
-		});
+		if (changes.ignorePeriod) {
+			local.set({
+				ignored: changes.ignorePeriod.newValue ? sAPI.ignored : {}
+			});
+			sAPI.init();
+		}
 	});
-	console.log('HTTPZ: settings loaded');
-	delete sAPI.loading;
-})();
+});
 
 function daysSince(unixTimeStamp) {
 	return (Date.now() - unixTimeStamp) / 86400000;
