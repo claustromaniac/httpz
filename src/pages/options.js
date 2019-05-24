@@ -5,6 +5,41 @@ const ui = document.getElementsByTagName('*');
 const dlpermission = { permissions : ['downloads'] };
 let reader;
 
+function exportSettings() {
+	local.get().then(r => {
+		browser.downloads.download({
+			saveAs : true,
+			url : URL.createObjectURL(new Blob([JSON.stringify(r, null, '\t')])),
+			filename : `HTTPZ_backup-${new Date().toISOString().replace(/.*?(\d.*\d).*/, '$1').replace(/\D/g, '.')}.json`
+		});
+	});
+}
+
+function parseWhitelist(str) {
+	const result = {};
+	str.split(/[\s,]+/).forEach(e => {
+		if (e.length) result[e] = null;
+	});
+	return result;
+}
+
+function populateWhitelist(obj) {
+	const entries = [];
+	for (const i in obj) entries.push(i);
+	return entries.join('\n');
+}
+
+function refreshUI(data) {
+	ui.autoDowngrade.checked = data.autoDowngrade;
+	ui.session.checked = !data.ignorePeriod;
+	ui.xdays.checked = data.ignorePeriod > 0;
+	ui.days.disabled = !ui.xdays.checked;
+	ui.permanent.checked = data.ignorePeriod === -1;
+	if (ui.xdays.checked) ui.days.value = data.ignorePeriod;
+	ui.rememberSecureSites.checked = data.rememberSecureSites;
+	ui.whitelist.value = populateWhitelist(data.whitelist);
+}
+
 function setStatus(button, msg, type) {
 	button.setAttribute(type, ` ${msg}`);
 	button.setAttribute(`${type}-count`, 4);
@@ -19,41 +54,6 @@ function setStatus(button, msg, type) {
 			clearInterval(counter);
 		} else button.setAttribute(`${type}-count`, count);
 	}, 1000);
-}
-
-function populateWhitelist(obj) {
-	const entries = [];
-	for (const i in obj) entries.push(i);
-	return entries.join('\n');
-}
-
-function parseWhitelist(str) {
-	const result = {};
-	str.split(/[\s,]+/).forEach(e => {
-		if (e.length) result[e] = null;
-	});
-	return result;
-}
-
-function refreshUI(data) {
-	ui.autoDowngrade.checked = data.autoDowngrade;
-	ui.session.checked = !data.ignorePeriod;
-	ui.xdays.checked = data.ignorePeriod > 0;
-	ui.days.disabled = !ui.xdays.checked;
-	ui.permanent.checked = data.ignorePeriod === -1;
-	if (ui.xdays.checked) ui.days.value = data.ignorePeriod;
-	ui.rememberSecureSites.checked = data.rememberSecureSites;
-	ui.whitelist.value = populateWhitelist(data.whitelist);
-}
-
-function exportSettings() {
-	local.get().then(r => {
-		browser.downloads.download({
-			saveAs : true,
-			url : URL.createObjectURL(new Blob([JSON.stringify(r, null, '\t')])),
-			filename : `HTTPZ_backup-${new Date().toISOString().replace(/.*?(\d.*\d).*/, '$1').replace(/\D/g, '.')}.json`
-		});
-	});
 }
 
 browser.runtime.sendMessage('options').then(msg => {
@@ -104,7 +104,7 @@ browser.runtime.sendMessage('options').then(msg => {
 	ui.save.onclick = e => {
 		const changes = {};
 		if (ui.xdays.checked) {
-			if (!/^[1-9][0-9]*$/.test(ui.days.value.toString())) {
+			if (!/^\d+$/.test(ui.days.value.toString())) {
 				setStatus(ui.save, '❌', 'status-failure');
 				return;
 			}
