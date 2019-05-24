@@ -110,8 +110,10 @@ browser.runtime.sendMessage('options').then(msg => {
 			}
 			changes.ignorePeriod = +ui.days.value;
 		} else if (ui.session.checked) {
-			changes.ignorePeriod = 0;
-			changes.ignored = {};
+			if (msg.ignorePeriod !== 0) {
+				msg.ignorePeriod = 0;
+				changes.ignorePeriod = 0;
+			}
 		} else changes.ignorePeriod = -1;
 		changes.autoDowngrade = ui.autoDowngrade.checked;
 		changes.whitelist = parseWhitelist(ui.whitelist.value);

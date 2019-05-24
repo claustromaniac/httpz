@@ -92,10 +92,7 @@ sAPI.loading = (async () => {
 sAPI.loading.then(() => {
 	browser.storage.onChanged.addListener((changes, area) => {
 		console.debug(`HTTPZ: ${area} storage changed`);
-		for (const i in changes) {
-			if (changes[i].hasOwnProperty('newValue')) sAPI[i] = changes[i].newValue;
-			else if (changes[i].hasOwnProperty('oldValue')) delete sAPI[i];
-		}
+		for (const i in changes) sAPI[i] = changes[i].newValue;
 		if (changes.ignorePeriod) {
 			local.set({
 				ignored: changes.ignorePeriod.newValue ? sAPI.ignored : {}
