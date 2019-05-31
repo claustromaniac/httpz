@@ -1,6 +1,7 @@
 'use strict';
 
 const exceptions = new Set([
+	'NS_ERROR_ABORT',
 	'NS_BINDING_ABORTED',
 	'NS_ERROR_UNKNOWN_HOST'
 ]);
