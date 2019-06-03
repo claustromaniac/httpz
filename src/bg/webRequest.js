@@ -57,13 +57,6 @@ webReq.onBeforeRequest.addListener(d => {
 		!isReservedAddress(url.hostname)
 	) {
 		if (tabsData[d.tabId].loading) {
-			if (!sAPI.autoDowngrade) {
-				browser.tabs.update(d.tabId, {
-					loadReplace: true,
-					url: `${warningPage}?target=${d.url}`
-				});
-				return {cancel: true};
-			}
 			ignore(url.hostname);
 			delete tabsData[d.tabId].loading;
 		} else {
