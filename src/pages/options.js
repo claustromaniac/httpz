@@ -117,7 +117,7 @@ browser.runtime.sendMessage('options').then(msg => {
 			}
 		} else changes.ignorePeriod = -1;
 		if (/^\d+$/.test(ui.maxWait.value.toString())) {
-			changes.maxWait = ui.maxWait.value;
+			changes.maxWait = +ui.maxWait.value;
 		} else {
 			setStatus(ui.save, '❌', 'status-failure');
 			return;
