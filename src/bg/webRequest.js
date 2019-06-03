@@ -69,6 +69,17 @@ webReq.onBeforeRequest.addListener(d => {
 		} else {
 			processed.add(url.hostname);
 			tabsData[d.tabId].loading = true;
+			if (sAPI.maxWait) tabsData[d.tabId].timerID = setTimeout(() => {
+				if (!sAPI.autoDowngrade) {
+					browser.tabs.update(d.tabId, {
+						loadReplace: true,
+						url: `${warningPage}?target=${d.url}`
+					});
+				} else if (
+					!sAPI.rememberSecureSites ||
+					!sAPI.knownSecure.hasOwnProperty(url.hostname)
+				) downgrade(url, d);
+			}, sAPI.maxWait*1000);
 			stackCleaner.run();
 			url.protocol = 'https:';
 			return {redirectUrl: url.toString()}
@@ -100,7 +111,10 @@ webReq.onBeforeRedirect.addListener(d => {
 
 webReq.onCompleted.addListener(d => {
 	const url = new URL(d.url);
-	if (processed.has(url.hostname)) browser.pageAction.show(d.tabId);
+	if (processed.has(url.hostname)) {
+		browser.pageAction.show(d.tabId);
+		if (tabsData[d.tabId].timerID) clearTimeout(tabsData[d.tabId].timerID);
+	}
 	if (sAPI.rememberSecureSites && !sAPI.knownSecure.hasOwnProperty(url.hostname)) {
 		sAPI.knownSecure[url.hostname] = null;
 		secureSaver.run();
@@ -115,16 +129,19 @@ webReq.onCompleted.addListener(d => {
 webReq.onErrorOccurred.addListener(d => {
 	console.info(`HTTPZ: ${d.error}`);
 	const url = new URL(d.url);
-	if (processed.has(url.hostname) && !exceptions.has(d.error)) {
-		if (!sAPI.autoDowngrade) {
-			browser.tabs.update(d.tabId, {
-				loadReplace: true,
-				url: `${warningPage}?target=${d.url}`
-			});
-		} else if (
-			!sAPI.rememberSecureSites ||
-			!sAPI.knownSecure.hasOwnProperty(url.hostname)
-		) downgrade(url, d);
+	if (processed.has(url.hostname)) {
+		if (tabsData[d.tabId].timerID) clearTimeout(tabsData[d.tabId].timerID);
+		if (!exceptions.has(d.error)) {
+			if (!sAPI.autoDowngrade) {
+				browser.tabs.update(d.tabId, {
+					loadReplace: true,
+					url: `${warningPage}?target=${d.url}`
+				});
+			} else if (
+				!sAPI.rememberSecureSites ||
+				!sAPI.knownSecure.hasOwnProperty(url.hostname)
+			) downgrade(url, d);
+		}
 	}
 }, sfilter);
 

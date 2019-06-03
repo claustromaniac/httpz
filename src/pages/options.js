@@ -36,6 +36,7 @@ function refreshUI(data) {
 	ui.days.disabled = !ui.xdays.checked;
 	ui.permanent.checked = data.ignorePeriod === -1;
 	if (ui.xdays.checked) ui.days.value = data.ignorePeriod;
+	ui.maxWait.value = data.maxWait;
 	ui.rememberSecureSites.checked = data.rememberSecureSites;
 	ui.whitelist.value = populateWhitelist(data.whitelist);
 }
@@ -115,9 +116,15 @@ browser.runtime.sendMessage('options').then(msg => {
 				changes.ignorePeriod = 0;
 			}
 		} else changes.ignorePeriod = -1;
+		if (/^\d+$/.test(ui.maxWait.value.toString())) {
+			changes.maxWait = ui.maxWait.value;
+		} else {
+			setStatus(ui.save, '❌', 'status-failure');
+			return;
+		}
 		changes.autoDowngrade = ui.autoDowngrade.checked;
-		changes.whitelist = parseWhitelist(ui.whitelist.value);
 		changes.rememberSecureSites = ui.rememberSecureSites.checked;
+		changes.whitelist = parseWhitelist(ui.whitelist.value);
 		setStatus(ui.save, '⭕', 'status-neutral');
 		local.set(changes).then(() => {
 			setStatus(ui.save, '✔', 'status-success');

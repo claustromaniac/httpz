@@ -35,6 +35,11 @@
 			</div>
 			<button class="browser-style" id="clearIgnored">Forget ignored sites</button><br>
 			<hr>
+			<p>The initial request to some sites that do not support HTTPS can take many seconds to time out. HTTPZ will try to never wait any longer than the time specified here to retry requests over HTTP. Set to 0 to wait until the browser gives up (default).</p>
+			<div class="browser-style fb">
+				<input id="maxWait" name="maxWait" type="number" min=0> &nbsp;second(s)
+			</div>
+			<hr>
 			<p>Whitelisted hostnames (will always be ignored by HTTPZ)</p>
 			<textarea autocomplete="off" class="browser-style" id="whitelist" rows="10" spellcheck="false"></textarea>
 			<button class="browser-style" id="clearWhitelist">Clear whitelist</button>

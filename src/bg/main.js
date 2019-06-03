@@ -49,6 +49,7 @@ const sAPI = {
 		'ignorePeriod': 7, //-1 = permanent, 0 = session-only, 1+ = X days
 		'incognitoWhitelist': {},
 		'knownSecure': {},
+		'maxWait': 0,
 		'rememberSecureSites': true,
 		'whitelist': {}
 	},
