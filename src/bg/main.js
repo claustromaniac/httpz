@@ -40,6 +40,7 @@ const secureSaver = new DelayableAction(10, 120, () => {
 const stackCleaner = new DelayableAction(100, 300, () => {
 	processed.clear();
 }, 10);
+const tabsData = {};
 
 const sAPI = {
 	ignored: {}, // hostname:unixTimeStamp pairs

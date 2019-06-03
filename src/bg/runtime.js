@@ -21,6 +21,8 @@ browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 		} else if (msg.ignore) { // error.js
 			ignore(msg.ignore);
 			return true;
+		} else if (msg.tabLoaded) {
+			delete tabsData[sender.tab.id].loading;
 		}
 	})();
 });

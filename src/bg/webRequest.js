@@ -56,10 +56,23 @@ webReq.onBeforeRequest.addListener(d => {
 		!isWhitelisted(url.hostname) &&
 		!isReservedAddress(url.hostname)
 	) {
-		processed.add(url.hostname);
-		stackCleaner.run();
-		url.protocol = 'https:';
-		return {redirectUrl: url.toString()}
+		if (tabsData[d.tabId].loading) {
+			if (!sAPI.autoDowngrade) {
+				browser.tabs.update(d.tabId, {
+					loadReplace: true,
+					url: `${warningPage}?target=${d.url}`
+				});
+				return {cancel: true};
+			}
+			ignore(url.hostname);
+			delete tabsData[d.tabId].loading;
+		} else {
+			processed.add(url.hostname);
+			tabsData[d.tabId].loading = true;
+			stackCleaner.run();
+			url.protocol = 'https:';
+			return {redirectUrl: url.toString()}
+		}
 	}
 }, filter, ['blocking']);
 

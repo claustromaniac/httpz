@@ -9,9 +9,17 @@
 		"scripts": [
 			"bg/main.js",
 			"bg/webRequest.js",
-			"bg/runtime.js"
+			"bg/runtime.js",
+			"bg/tabs.js"
 		]
 	},
+	"content_scripts": [
+		{
+			"matches": ["https://*/*"],
+			"js": ["cs.js"],
+			"run_at": "document_start"
+		}
+	],
 	"description": "Zapping those inZecure connections into sublime submission since ~2018.",
 	"author": "claustromaniac",
 	"homepage_url": "https://github.com/claustromaniac/httpz",
