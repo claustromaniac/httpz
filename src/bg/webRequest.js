@@ -61,7 +61,6 @@ webReq.onBeforeRequest.addListener(d => {
 			delete tabsData[d.tabId].loading;
 		} else {
 			processed.add(url.hostname);
-			tabsData[d.tabId].loading = true;
 			if (sAPI.maxWait) tabsData[d.tabId].timerID = setTimeout(() => {
 				if (!sAPI.autoDowngrade) {
 					browser.tabs.update(d.tabId, {
@@ -102,6 +101,11 @@ webReq.onBeforeRedirect.addListener(d => {
 	}
 }, filter);
 
+webReq.onResponseStarted.addListener(d => {
+	const url = new URL(d.url);
+	if (processed.has(url.hostname)) tabsData[d.tabId].loading = true;
+}, sfilter);
+
 webReq.onCompleted.addListener(d => {
 	const url = new URL(d.url);
 	if (processed.has(url.hostname)) {
@@ -123,6 +127,7 @@ webReq.onErrorOccurred.addListener(d => {
 	console.info(`HTTPZ: ${d.error}`);
 	const url = new URL(d.url);
 	if (processed.has(url.hostname)) {
+		delete tabsData[d.tabId].loading;
 		if (tabsData[d.tabId].timerID) clearTimeout(tabsData[d.tabId].timerID);
 		if (!exceptions.has(d.error)) {
 			if (!sAPI.autoDowngrade) {
