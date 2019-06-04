@@ -8,9 +8,9 @@
 	"background": {
 		"scripts": [
 			"bg/main.js",
-			"bg/webRequest.js",
 			"bg/runtime.js",
-			"bg/tabs.js"
+			"bg/tabs.js",
+			"bg/webRequest.js"
 		]
 	},
 	"content_scripts": [
