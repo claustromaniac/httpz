@@ -39,12 +39,23 @@ function isReservedAddress(str) {
 }
 
 function downgrade(url, d) {
-	ignore(url.hostname);
-	url.protocol = 'http:';
-	browser.tabs.update(
-		d.tabId,
-		{ loadReplace: true, url: url.toString() }
-	);
+	if (!sAPI.autoDowngrade) {
+		tabsData[d.tabId].url = url;
+		browser.tabs.update(d.tabId, {
+			loadReplace: true,
+			url: warningPage
+		});
+	} else if (
+		!sAPI.rememberSecureSites ||
+		!sAPI.knownSecure.hasOwnProperty(url.hostname)
+	) {
+		ignore(url.hostname);
+		url.protocol = 'http:';
+		browser.tabs.update(
+			d.tabId,
+			{ loadReplace: true, url: url.toString() }
+		);
+	}
 }
 
 /** ------------------------------ **/
@@ -60,20 +71,12 @@ webReq.onBeforeRequest.addListener(d => {
 			ignore(url.hostname);
 			delete tabsData[d.tabId].loading;
 		} else {
-			processed.add(url.hostname);
-			if (sAPI.maxWait) tabsData[d.tabId].timerID = setTimeout(() => {
-				if (!sAPI.autoDowngrade) {
-					browser.tabs.update(d.tabId, {
-						loadReplace: true,
-						url: `${warningPage}?target=${d.url}`
-					});
-				} else if (
-					!sAPI.rememberSecureSites ||
-					!sAPI.knownSecure.hasOwnProperty(url.hostname)
-				) downgrade(url, d);
-			}, sAPI.maxWait*1000);
-			stackCleaner.run();
 			url.protocol = 'https:';
+			processed.add(url.hostname);
+			stackCleaner.run();
+			if (sAPI.maxWait) tabsData[d.tabId].timerID = setTimeout(() => {
+				downgrade(url, d);
+			}, sAPI.maxWait*1000);
 			return {redirectUrl: url.toString()}
 		}
 	}
@@ -129,17 +132,7 @@ webReq.onErrorOccurred.addListener(d => {
 	if (processed.has(url.hostname)) {
 		delete tabsData[d.tabId].loading;
 		if (tabsData[d.tabId].timerID) clearTimeout(tabsData[d.tabId].timerID);
-		if (!exceptions.has(d.error)) {
-			if (!sAPI.autoDowngrade) {
-				browser.tabs.update(d.tabId, {
-					loadReplace: true,
-					url: `${warningPage}?target=${d.url}`
-				});
-			} else if (
-				!sAPI.rememberSecureSites ||
-				!sAPI.knownSecure.hasOwnProperty(url.hostname)
-			) downgrade(url, d);
-		}
+		if (!exceptions.has(d.error)) downgrade(url, d);
 	}
 }, sfilter);
 

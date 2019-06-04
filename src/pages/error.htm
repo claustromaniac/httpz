@@ -7,11 +7,11 @@
 	<body>
 		<div>
 			<img src="../assets/httpz.svg"><img>
-			<p>HTTPZ tried to load <code id="hostname">(hostname)</code> over HTTPS, but this resulted in an error.</p>
+			<p>HTTPZ tried to load <code id="hostname">(loading...)</code> over HTTPS, but this resulted in an error.</p>
 			<p>Errors are expected when servers do not support the protocol, or when there are network issues, but they could also mean that an intermediary is trying to exploit this extension to perform a Man-in-the-Middle attack against you.</p>
 			<p>Proceed at your own discretion.</p>
-			<button id="retry">Retry</button>
-			<button id="continue">Proceed over HTTP</button>
+			<button id="retry" disabled>Retry</button>
+			<button id="continue" disabled>Proceed over HTTP</button>
 		</div>
 		<script src="error.js"></script>
 	</body>

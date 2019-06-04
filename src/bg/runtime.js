@@ -18,7 +18,12 @@ browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 			wlSaver.run();
 			return delete sAPI.whitelist[msg.host] &&
 			delete sAPI.incognitoWhitelist[msg.host];
-		} else if (msg.ignore) { // error.js
+		} else if (msg.getUrl) { // error.js
+			const id = sender.tab.id;
+			return {
+				url: tabsData[id].url ? tabsData[id].url.toString() : undefined
+			};
+		} else if (msg.ignore) {
 			ignore(msg.ignore);
 			return true;
 		} else if (msg.tabLoaded) { // cs.js
