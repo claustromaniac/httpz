@@ -6,51 +6,72 @@
 	</head>
 	<body>
 		<fieldset>
-			<p>By default, HTTPZ will fall back to HTTP automatically on error, but if you disable this, you will be shown a warning instead, so you can decide how to proceed.</p>
-			<div class="browser-style fb">
-				<input id="autoDowngrade" type="checkbox"><label for="autoDowngrade">
-					Automatic mode
+			<div>
+				By default, HTTPZ will fall back to HTTP automatically on error, but if you disable this, you will be shown a warning instead, so you can decide how to proceed.
+				<div class="browser-style fb">
+					<input id="autoDowngrade" type="checkbox"><label for="autoDowngrade">
+						Automatic Mode
+					</label>
+				</div>
+			</div>
+			<hr>
+			<div>
+				Every time that you navigate to a site that loads successfully over HTTPS, HTTPZ remembers its hostname, so as to avoid redirecting it to HTTP if it ever fails in the future. This minimizes the risk of a <abbr title="Man in the Middle">MitM</abbr> being able to exploit the extension's behavior. Note that this is only meaningful in automatic mode.
+				<div class="browser-style fb">
+					<input id="rememberSecureSites" type="checkbox"><label for="rememberSecureSites">
+						Remember Secure Sites
+					</label>
+					<div class="inlb fill"></div>
+					<button class="browser-style" id="clearSecure">Forget Secure Sites</button>
+				</div>
+			</div>
+			<hr>
+			<div>
+				When a site does not support HTTPS, ignore requests to it...
+				<div class="fb">
+					<div class="inlb">
+						<div class="browser-style fb">
+							<input id="session" name="period" type="radio"><label for="session">until Firefox is restarted</label>
+						</div>
+						<div class="browser-style fb">
+							<input id="xdays" name="period" type="radio"><label for="xdays">for
+							<input id="days" name="days" type="number" min=1 required> day(s)</label>
+						</div>
+						<div class="browser-style fb">
+							<input id="permanent" name="period" type="radio"><label for="permanent">always</label>
+						</div>
+					</div>
+					<div class="inlb fill"></div>
+					<button class="browser-style" id="clearIgnored">Forget Ignored Sites</button>
+				</div>
+			</div>
+			<hr>
+			<div>
+				The initial request to some sites that do not support HTTPS can take long to time out. HTTPZ will never wait longer than the time specified here before retrying requests over HTTP. Set to 0 to wait until the browser gives up (default).
+				<div class="browser-style fb">
+					<input id="maxWait" name="maxWait" type="number" min=0> &nbsp;second(s)
+				</div>
+			</div>
+			<hr>
+			<div>
+				Whitelisted hostnames (will always be ignored by HTTPZ)
+				<div class="fb">
+					<textarea autocomplete="off" class="browser-style" id="whitelist" rows="10" spellcheck="false"></textarea>
+					<div class="inlb fill"></div>
+					<button class="browser-style" id="clearWhitelist">Clear Whitelist</button>
+				</div>
+			</div>
+		</fieldset>
+		<div class="fb">
+			<button class="browser-style" id="export">Export</button>
+			<button class="browser-style" id="fakeFileInput">
+				<label>&nbsp;Import&nbsp;
+					<input type="file" accept=".json" id="import"></input>
 				</label>
-			</div><br>
-			<hr>
-			<p>Every time you navigate to a site that loads successfully over HTTPS, HTTPZ remembers its hostname, so as to avoid redirecting it to HTTP if it ever fails in the future. This minimizes the risk of a <abbr title="Man in the Middle">MitM</abbr> being able to exploit the extension's behavior.</p>
-			<p>Note: this is only meaningful in automatic mode.</p>
-			<div class="browser-style fb">
-				<input id="rememberSecureSites" type="checkbox"><label for="rememberSecureSites">
-					Remember secure sites
-				</label>
-			</div>
-			<button class="browser-style" id="clearSecure">Forget secure sites</button><br>
-			<hr>
-			<p>Check again if a site supports HTTPS...</p>
-			<div class="browser-style fb">
-				<input id="session" name="period" type="radio"><label for="session">after Firefox is restarted</label>
-			</div>
-			<div class="browser-style fb">
-				<input id="xdays" name="period" type="radio"><label for="xdays">after
-				<input id="days" name="days" type="number" min=1 required> day(s)</label>
-			</div>
-			<div class="browser-style fb">
-				<input id="permanent" name="period" type="radio"><label for="permanent">never</label>
-			</div>
-			<button class="browser-style" id="clearIgnored">Forget ignored sites</button><br>
-			<hr>
-			<p>The initial request to some sites that do not support HTTPS can take long to time out. HTTPZ will try to never wait any longer than the time specified here before retrying requests over HTTP. Set to 0 to wait until the browser gives up (default).</p>
-			<div class="browser-style fb">
-				<input id="maxWait" name="maxWait" type="number" min=0> &nbsp;second(s)
-			</div><br>
-			<hr>
-			<p>Whitelisted hostnames (will always be ignored by HTTPZ)</p>
-			<textarea autocomplete="off" class="browser-style" id="whitelist" rows="10" spellcheck="false"></textarea>
-			<button class="browser-style" id="clearWhitelist">Clear whitelist</button>
-		</fieldset><br>
-		<button class="browser-style" id="export">Export</button>
-		<button class="browser-style" id="fakeFileInput">
-			<label>&nbsp;Import&nbsp;
-				<input type="file" accept=".json" id="import"></input>
-			</label>
-		</button>
-		<button class="browser-style" id="save">Save</button>
+			</button>
+			<div class="inlb fill"></div>
+			<button class="browser-style" id="save">Save</button>
+		</div>
 		<script src="options.js"></script>
 	</body>
 </html>
