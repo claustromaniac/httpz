@@ -14,7 +14,7 @@
 			</div><br>
 			<hr>
 			<p>Every time you navigate to a site that loads successfully over HTTPS, HTTPZ remembers its hostname, so as to avoid redirecting it to HTTP if it ever fails in the future. This minimizes the risk of a <abbr title="Man in the Middle">MitM</abbr> being able to exploit the extension's behavior.</p>
-			<p>Note: this is only useful in automatic mode.</p>
+			<p>Note: this is only meaningful in automatic mode.</p>
 			<div class="browser-style fb">
 				<input id="rememberSecureSites" type="checkbox"><label for="rememberSecureSites">
 					Remember secure sites
@@ -35,10 +35,10 @@
 			</div>
 			<button class="browser-style" id="clearIgnored">Forget ignored sites</button><br>
 			<hr>
-			<p>The initial request to some sites that do not support HTTPS can take many seconds to time out. HTTPZ will try to never wait any longer than the time specified here to retry requests over HTTP. Set to 0 to wait until the browser gives up (default).</p>
+			<p>The initial request to some sites that do not support HTTPS can take long to time out. HTTPZ will try to never wait any longer than the time specified here before retrying requests over HTTP. Set to 0 to wait until the browser gives up (default).</p>
 			<div class="browser-style fb">
 				<input id="maxWait" name="maxWait" type="number" min=0> &nbsp;second(s)
-			</div>
+			</div><br>
 			<hr>
 			<p>Whitelisted hostnames (will always be ignored by HTTPZ)</p>
 			<textarea autocomplete="off" class="browser-style" id="whitelist" rows="10" spellcheck="false"></textarea>
