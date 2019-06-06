@@ -2,15 +2,22 @@
 
 const ui = document.getElementsByTagName('*');
 
-browser.tabs.getCurrent().then(tab => {
-	const url = new URL(tab.url);
-	const target = new URL(url.searchParams.get('target'));
-	ui.hostname.textContent = target.hostname;
+browser.runtime.sendMessage({getUrl: true}).then(msg => {
+	if (!msg.url) return;
+	ui.retry.disabled = false;
+	ui.continue.disabled = false;
+	const url = new URL(msg.url);
+	ui.hostname.textContent = url.hostname;
 	ui.continue.onclick = e => {
+		ui.retry.disabled = true;
 		ui.continue.disabled = true;
-		browser.runtime.sendMessage({ignore: target.hostname}).then(() => {
-			target.protocol = 'http:';
-			browser.tabs.update(tab.id, {loadReplace: true, url: target.toString()});
+		browser.runtime.sendMessage({ignore: url.hostname}).then(() => {
+			location.href = msg.url.replace(/^https:/, 'http:');
 		});
+	};
+	ui.retry.onclick = e => {
+		ui.retry.disabled = true;
+		ui.continue.disabled = true;
+		location.href = msg.url;
 	};
 });

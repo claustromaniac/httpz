@@ -1,27 +1,21 @@
 'use strict';
 
-const processed = new Set();
-const stackCleaner = new DelayableAction(100, 300, () => {
-	processed.clear();
-});
-const ignoredSaver = new DelayableAction(10, 60, () => {
-	if (settings.ignorePeriod) browser.storage.local.set({ignored: settings.ignored});
-});
-const secureSaver = new DelayableAction(10, 60, () => {
-	browser.storage.local.set({knownSecure: settings.knownSecure});
-});
 const exceptions = new Set([
+	'NS_ERROR_ABORT',
 	'NS_BINDING_ABORTED',
 	'NS_ERROR_UNKNOWN_HOST'
 ]);
 const filter = {urls: ["http://*/*"], types: ['main_frame']};
+const processed = new Set();
 const sfilter = {urls: ["https://*/*"], types: ['main_frame']};
+const warningPage = browser.runtime.getURL('pages/error.htm');
+const webReq = browser.webRequest;
 
 /** ---------- Functions ---------- **/
 
 function IPinRange(ip, min, max) {
 	for (const i in ip) {
-		if (ip[i] < min[i] || ip[i] > max[i]) return;
+		if (ip[i] > max[i] || ip[i] < min[i]) return;
 	}
 	return true;
 }
@@ -30,7 +24,7 @@ function isReservedAddress(str) {
 	const addr = str.split('.');
 	if (addr.length !== 4) return addr.length == 1; // no dots = loopback or the like
 	for (const part of addr) {
-		if (Number.isNaN(+part) || part < 0 || part > 255) return;
+		if (Number.isNaN(+part) || part > 255 || part < 0) return;
 	}
 	return (
 		IPinRange(addr, [10,0,0,0], [10,255,255,255]) ||
@@ -44,54 +38,51 @@ function isReservedAddress(str) {
 	);
 }
 
-function isWhitelisted(host) {
-	return settings.whitelist.hasOwnProperty(host) || settings.incognitoWhitelist.hasOwnProperty(host);
-}
-
-function ignore(host) {
-	if (!settings.ignored[host]) {
-		settings.ignored[host] = Date.now();
-		if (settings.ignorePeriod) ignoredSaver.run();
-	}
-	delete settings.knownSecure[host];
-}
-
 function downgrade(url, d) {
-	ignore(url.hostname);
-	url.protocol = 'http:';
-	browser.tabs.update(
-		d.tabId,
-		{ loadReplace: true, url: url.toString() }
-	);
-}
-
-function daysSince(unixTimeStamp) {
-	return (Date.now() - unixTimeStamp) / 86400000;
+	if (!sAPI.autoDowngrade) {
+		tabsData[d.tabId].url = url;
+		browser.tabs.update(d.tabId, {
+			loadReplace: true,
+			url: warningPage
+		});
+	} else if (
+		!sAPI.rememberSecureSites ||
+		!sAPI.knownSecure.hasOwnProperty(url.hostname)
+	) {
+		ignore(url.hostname);
+		url.protocol = 'http:';
+		browser.tabs.update(
+			d.tabId,
+			{ loadReplace: true, url: url.toString() }
+		);
+	}
 }
 
 /** ------------------------------ **/
 
-browser.webRequest.onBeforeRequest.addListener(d => {
+webReq.onBeforeRequest.addListener(d => {
 	const url = new URL(d.url);
-	if (settings.ignorePeriod > 0) {
-		const ignoredTime = settings.ignored[url.hostname];
-		if (ignoredTime && daysSince(ignoredTime) > settings.ignorePeriod) {
-			delete settings.ignored[url.hostname];
-		}
-	}
 	if (
-		!settings.ignored[url.hostname] &&
+		!isIgnored(url.hostname) &&
 		!isWhitelisted(url.hostname) &&
 		!isReservedAddress(url.hostname)
 	) {
-		processed.add(url.hostname);
-		stackCleaner.run();
-		url.protocol = 'https:';
-		return {redirectUrl: url.toString()}
+		if (tabsData[d.tabId].loading) {
+			ignore(url.hostname);
+			delete tabsData[d.tabId].loading;
+		} else {
+			url.protocol = 'https:';
+			processed.add(url.hostname);
+			stackCleaner.run();
+			if (sAPI.maxWait) tabsData[d.tabId].timerID = setTimeout(() => {
+				downgrade(url, d);
+			}, sAPI.maxWait*1000);
+			return {redirectUrl: url.toString()}
+		}
 	}
 }, filter, ['blocking']);
 
-browser.webRequest.onBeforeRedirect.addListener(d => {
+webReq.onBeforeRedirect.addListener(d => {
 	const url = new URL(d.url);
 	const newTarget = new URL(d.redirectUrl);
 	if (newTarget.protocol === 'http:') ignore(url.hostname);
@@ -101,7 +92,7 @@ browser.webRequest.onBeforeRedirect.addListener(d => {
 	}
 }, sfilter);
 
-browser.webRequest.onBeforeRedirect.addListener(d => {
+webReq.onBeforeRedirect.addListener(d => {
 	const url = new URL(d.url);
 	const newTarget = new URL(d.redirectUrl);
 	if (newTarget.protocol === 'https:') {
@@ -113,39 +104,41 @@ browser.webRequest.onBeforeRedirect.addListener(d => {
 	}
 }, filter);
 
-browser.webRequest.onCompleted.addListener(d => {
+webReq.onResponseStarted.addListener(d => {
 	const url = new URL(d.url);
-	if (processed.has(url.hostname)) browser.pageAction.show(d.tabId);
-	if (settings.rememberSecureSites && !settings.knownSecure.hasOwnProperty(url.hostname)) {
-		settings.knownSecure[url.hostname] = null;
+	if (processed.has(url.hostname)) tabsData[d.tabId].loading = true;
+}, sfilter);
+
+webReq.onCompleted.addListener(d => {
+	const url = new URL(d.url);
+	if (processed.has(url.hostname)) {
+		browser.pageAction.show(d.tabId);
+		if (tabsData[d.tabId].timerID) clearTimeout(tabsData[d.tabId].timerID);
+	}
+	if (sAPI.rememberSecureSites && !sAPI.knownSecure.hasOwnProperty(url.hostname)) {
+		sAPI.knownSecure[url.hostname] = null;
 		secureSaver.run();
 	}
 }, sfilter);
 
-browser.webRequest.onCompleted.addListener(d => {
+webReq.onCompleted.addListener(d => {
 	const url = new URL(d.url);
 	if (isWhitelisted(url.hostname)) browser.pageAction.show(d.tabId);
 }, filter);
 
-browser.webRequest.onErrorOccurred.addListener(d => {
+webReq.onErrorOccurred.addListener(d => {
 	console.info(`HTTPZ: ${d.error}`);
 	const url = new URL(d.url);
-	if (processed.has(url.hostname) && !exceptions.has(d.error)) {
-		if (!settings.autoDowngrade) {
-			browser.tabs.update(d.tabId, {
-				loadReplace: true,
-				url: `${warningPage}?target=${d.url}`
-			});
-		} else if (
-			!settings.rememberSecureSites ||
-			!settings.knownSecure.hasOwnProperty(url.hostname)
-		) downgrade(url, d);
+	if (processed.has(url.hostname)) {
+		delete tabsData[d.tabId].loading;
+		if (tabsData[d.tabId].timerID) clearTimeout(tabsData[d.tabId].timerID);
+		if (!exceptions.has(d.error)) downgrade(url, d);
 	}
 }, sfilter);
 
-browser.webRequest.onErrorOccurred.addListener(d => {
+webReq.onErrorOccurred.addListener(d => {
 	const url = new URL(d.url);
-	if (settings.ignored[url.hostname] && processed.has(url.hostname)) {
-		delete settings.ignored[url.hostname];
+	if (sAPI.ignored[url.hostname] && processed.has(url.hostname)) {
+		delete sAPI.ignored[url.hostname];
 	}
 }, filter);

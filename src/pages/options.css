@@ -1,47 +1,40 @@
-* { box-sizing: border-box; }
-body { display: table; }
-code, fieldset, textarea { border-radius: 0.3em; }
-fieldset { width: 95vw; }
-button, input, textarea, p { margin-left: 0.25em; }
-button {
-	margin-right: 0.5em;
-	margin-top: 1em;
-	padding: 0 0.75em;
-}
-textarea {
-	font-family: "Consolas";
-	font-weight: 100;
-	width: 100%;
-}
-#days {
-	background-color: #FFF;
-	color: #000;
-	text-align: center;
-	width: 4em;
+* {
+	box-sizing: border-box;
+	margin: 0;
 }
 .fb {
 	align-items: center;
 	display: flex;
 	flex-flow: row wrap;
 }
-.fb * { margin: auto inherit; }
-button[status-neutral]::after {
-	content: attr(status-neutral);
+.fb > * {margin: auto inherit;}
+.fill {
+	flex-grow: 10;
+	min-height: 1em;
+	min-width: 1em;
 }
-button[status-success]::after {
-	content: attr(status-success);
-	color: #021;
-	text-shadow: 0 0 0.2em #0F8;
+.inlb {display: inline-block;}
+.num {width: 3.5em;}
+code, fieldset, textarea {border-radius: 5px;}
+body > * {
+	margin: 0.5em auto;
+	width: 90vw;
 }
-button[status-failure]::after {
-	content: attr(status-failure);
-	color: #300;
-	text-shadow: 0 0 0.2em #F00;
+fieldset > div {padding: 1em 1em;}
+fieldset > div > * {margin-top: 1em;}
+button {
+	min-width: 6em;
+	padding: 0 0.75em;
+	text-align: center;
+}
+button.wide {min-width: 10em;}
+button+button, input+* {margin-left: 1em;}
+textarea {
+	font-family: "Consolas";
+	font-weight: 100;
+	width: 100%;
 }
 input[type="file"] {display: none;}
-button label {margin: 0;}
-#fakeFileInput {padding: 0;}
-#save {
-	float: right;
-	font-weight: 700;
-}
+#clearIgnored {align-self: flex-end;}
+#clearWhitelist {margin-top: 1em;}
+#save {font-weight: 700;}
