@@ -43,8 +43,8 @@ function refreshUI(data) {
 	if (data.hasOwnProperty('whitelist')) ui.whitelist.value = populateWhitelist(data.whitelist);
 }
 
-function setStatus(button, success, toggleDisabled = false) {
-	if (toggleDisabled) button.disabled = !button.disabled;
+function setStatus(button, success) {
+	button.disabled = false;
 	const attrib = success ? 'sstatus-timer' : 'fstatus-timer';
 	const symbol = success ? '✓' : '✖';
 	button.setAttribute(attrib, 4);
@@ -99,10 +99,10 @@ browser.runtime.sendMessage('options').then(msg => {
 					if (data.hasOwnProperty('ignorePeriod')) {
 						local.set(data);
 						refreshUI(data);
-						setStatus(ui.fakeFileInput, true, true);
+						setStatus(ui.fakeFileInput, true);
 					} else throw 'SyntaxError';
 				} catch {
-					setStatus(ui.fakeFileInput, false, true);
+					setStatus(ui.fakeFileInput, false);
 					alert('Error. Invalid file (?)');
 				};
 			};
@@ -121,7 +121,7 @@ browser.runtime.sendMessage('options').then(msg => {
 		const changes = {};
 		if (ui.xdays.checked) {
 			if (!/^\d*[1-9]$/.test(ui.days.value.toString())) {
-				setStatus(ui.save, false, true);
+				setStatus(ui.save, false);
 				return;
 			}
 			changes.ignorePeriod = +ui.days.value;
@@ -134,14 +134,14 @@ browser.runtime.sendMessage('options').then(msg => {
 		if (/^\d+$/.test(ui.maxWait.value.toString())) {
 			changes.maxWait = +ui.maxWait.value;
 		} else {
-			setStatus(ui.save, false, true);
+			setStatus(ui.save, false);
 			return;
 		}
 		changes.autoDowngrade = ui.autoDowngrade.checked;
 		changes.rememberSecureSites = ui.rememberSecureSites.checked;
 		changes.whitelist = parseWhitelist(ui.whitelist.value);
 		local.set(changes).then(() => {
-			setStatus(ui.save, true, true);
+			setStatus(ui.save, true);
 		});
 	};
 	browser.permissions.contains(dlpermission).then(r => {
