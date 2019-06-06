@@ -7,7 +7,5 @@ tabs.onCreated.addListener(tab => {
 });
 tabs.onRemoved.addListener((tabId, removeInfo) => {delete tabsData[tabId]});
 tabs.query({}).then(r => {
-	for (const tab of r) tabsData[tab.id] = {
-		url: tab.url
-	};
+	for (const tab of r) tabsData[tab.id] = {};
 });
