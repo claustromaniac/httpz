@@ -13,42 +13,28 @@
 	min-height: 1em;
 	min-width: 1em;
 }
-.inlb {display: inline-block;;}
+.inlb {display: inline-block;}
+.num {width: 3.5em;}
 code, fieldset, textarea {border-radius: 5px;}
 body > * {
 	margin: 0.5em auto;
 	width: 90vw;
 }
-fieldset > div {padding: 1em 0;}
-fieldset > div > * {margin-top: 0.5em;}
-button {padding: 0 0.75em;}
-button+button, input+* {margin-left: 0.5em;}
+fieldset > div {padding: 1em 1em;}
+fieldset > div > * {margin-top: 1em;}
+button {
+	min-width: 6em;
+	padding: 0 0.75em;
+	text-align: center;
+}
+button.wide {min-width: 10em;}
+button+button, input+* {margin-left: 1em;}
 textarea {
 	font-family: "Consolas";
 	font-weight: 100;
 	width: 100%;
 }
-input[type="number"] {
-	background-color: #FFF;
-	color: #000;
-	text-align: center;
-	width: 3.5em;
-}
 input[type="file"] {display: none;}
-button[status-neutral]::after {
-	content: attr(status-neutral);
-}
-button[status-success]::after {
-	content: attr(status-success);
-	color: #021;
-	text-shadow: 0 0 0.2em #0F8;
-}
-button[status-failure]::after {
-	content: attr(status-failure);
-	color: #300;
-	text-shadow: 0 0 0.2em #F00;
-}
 #clearIgnored {align-self: flex-end;}
 #clearWhitelist {margin-top: 1em;}
-#fakeFileInput {padding: 0;}
 #save {font-weight: 700;}

@@ -22,7 +22,7 @@
 						Remember Secure Sites
 					</label>
 					<div class="inlb fill"></div>
-					<button class="browser-style" id="clearSecure">Forget Secure Sites</button>
+					<button class="browser-style wide" id="clearSecure" type="button">Forget Secure Sites</button>
 				</div>
 			</div>
 			<hr>
@@ -35,21 +35,23 @@
 						</div>
 						<div class="browser-style fb">
 							<input id="xdays" name="period" type="radio"><label for="xdays">for
-							<input id="days" name="days" type="number" min=1 required> day(s)</label>
+							<div class="browser-style inlb">
+								<input id="days" type="text" class="num" pattern="^\d*[1-9]$" required>
+							</div> day(s)</label>
 						</div>
 						<div class="browser-style fb">
 							<input id="permanent" name="period" type="radio"><label for="permanent">always</label>
 						</div>
 					</div>
 					<div class="inlb fill"></div>
-					<button class="browser-style" id="clearIgnored">Forget Ignored Sites</button>
+					<button class="browser-style wide" id="clearIgnored" type="button">Forget Ignored Sites</button>
 				</div>
 			</div>
 			<hr>
 			<div>
 				The initial request to some sites that do not support HTTPS can take long to time out. HTTPZ will never wait longer than the time specified here before retrying requests over HTTP. Set to 0 to wait until the browser gives up (default).
 				<div class="browser-style fb">
-					<input id="maxWait" name="maxWait" type="number" min=0> &nbsp;second(s)
+					<input id="maxWait" type="text" class="num" pattern="^\d+$" required> &nbsp;second(s)
 				</div>
 			</div>
 			<hr>
@@ -58,19 +60,17 @@
 				<div class="fb">
 					<textarea autocomplete="off" class="browser-style" id="whitelist" rows="10" spellcheck="false"></textarea>
 					<div class="inlb fill"></div>
-					<button class="browser-style" id="clearWhitelist">Clear Whitelist</button>
+					<button class="browser-style wide" id="clearWhitelist" type="button">Clear Whitelist</button>
 				</div>
 			</div>
 		</fieldset>
 		<div class="fb">
-			<button class="browser-style" id="export">Export</button>
-			<button class="browser-style" id="fakeFileInput">
-				<label>&nbsp;Import&nbsp;
-					<input type="file" accept=".json" id="import"></input>
-				</label>
+			<button class="browser-style" id="export" type="button">Export</button>
+			<button class="browser-style" id="fakeFileInput" type="button">Import
+				<input type="file" accept=".json" id="import"></input>
 			</button>
 			<div class="inlb fill"></div>
-			<button class="browser-style" id="save">Save</button>
+			<button class="browser-style default" id="save" type="button">Save</button>
 		</div>
 		<script src="options.js"></script>
 	</body>
