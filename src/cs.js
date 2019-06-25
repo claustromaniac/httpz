@@ -1,8 +1,8 @@
 (() => {
 	'use strict';
-	window.onload = e => {
+	window.addEventListener('load', e => {
 		browser.runtime.sendMessage({
 			tabLoaded: true
 		});
-	};
+	});
 })();
