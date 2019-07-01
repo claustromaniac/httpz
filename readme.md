@@ -3,7 +3,7 @@ There are numerous similar extensions out there, but HTTPZ is different because 
 - When you navigate to a site over HTTPS by yourself, or because of some external factor (like Firefox filling the address with https:// based on your history and so on), HTTPZ ignores that request, regardless of the outcome.
 - When you navigate to a site over HTTPS and *the servers* redirect you to HTTP, the extension notices this and automatically adds that hostname to the list of sites to ignore.
 
-HTTPZ is meant to be unobtrusive and lightweight, it respects your privacy, and it is free of trans fats. Additionally, it is very configurable, and should be slightly more secure than some of the alternatives out there, since it has a couple of built-in ways to circumvent Man-in-the-Middle attacks.
+HTTPZ is meant to be unobtrusive and lightweight, it respects your privacy, and it is free of trans fats. Additionally, it is very configurable, and should be slightly more secure than some of the alternatives out there, since it has a couple of built-in ways to defend against SSL stripping attacks.
 
 It also gets along with the [Temporary Containers][TC] extension, which I recommend.
 
