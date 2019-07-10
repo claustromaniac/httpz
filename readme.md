@@ -7,7 +7,7 @@ HTTPZ is meant to be unobtrusive and lightweight, it respects your privacy, and 
 
 It also gets along with the [Temporary Containers][TC] extension, which I recommend.
 
-Interested in more recommendations? Head over to the [ghacks-user.js][user.js] GitHub repository. It is an amazing project for hardening Firefox that I am proud to have contributed to, and a great source of information (including extension recommendations).
+Interested in more recommendations? Head over to the [ghacks-user.js][user.js] GitHub repository. It is an amazing project for hardening Firefox that I have contributed to, and a great source of information (including extension recommendations).
 
 Limitations
 ------------
