@@ -112,6 +112,13 @@ webReq.onResponseStarted.addListener(d => {
 webReq.onCompleted.addListener(d => {
 	const url = new URL(d.url);
 	if (processed.has(url.hostname)) {
+		if (
+			sAPI.proxyCompat &&
+			(d.statusCode === 502 || d.statusCode === 504)
+		) {
+			console.info(`HTTPZ: status code ${d.statusCode} (Proxy-Compatible Mode)`);
+			return downgrade(url, d);
+		}
 		browser.pageAction.show(d.tabId);
 		if (tabsData[d.tabId].timerID) clearTimeout(tabsData[d.tabId].timerID);
 	}

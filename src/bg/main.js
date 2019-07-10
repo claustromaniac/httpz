@@ -50,6 +50,7 @@ const sAPI = {
 		'incognitoWhitelist': {},
 		'knownSecure': {},
 		'maxWait': 0,
+		'proxyCompat': false,
 		'rememberSecureSites': true,
 		'whitelist': {}
 	},

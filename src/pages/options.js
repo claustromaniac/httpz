@@ -37,6 +37,7 @@ function refreshUI(data) {
 		ui.days.disabled = !ui.xdays.checked;
 		ui.permanent.checked = data.ignorePeriod === -1;
 		ui.days.value = data.ignorePeriod;
+		ui.proxyCompat.checked = data.proxyCompat;
 	}
 	if (data.hasOwnProperty('maxWait')) ui.maxWait.value = data.maxWait;
 	if (data.hasOwnProperty('rememberSecureSites')) ui.rememberSecureSites.checked = data.rememberSecureSites;
@@ -140,6 +141,7 @@ browser.runtime.sendMessage('options').then(msg => {
 		changes.autoDowngrade = ui.autoDowngrade.checked;
 		changes.rememberSecureSites = ui.rememberSecureSites.checked;
 		changes.whitelist = parseWhitelist(ui.whitelist.value);
+		changes.proxyCompat = ui.proxyCompat.checked;
 		local.set(changes).then(() => {
 			setStatus(ui.save, true);
 		});

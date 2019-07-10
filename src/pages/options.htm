@@ -56,6 +56,15 @@
 			</div>
 			<hr>
 			<div>
+				Enable this if you connect through a forward proxy or gateway and HTTPZ causes it to respond with status codes 502 and/or 504 frequently.
+				<div class="browser-style fb">
+					<input id="proxyCompat" type="checkbox"><label for="proxy">
+						Proxy-Compatible Mode
+					</label>
+				</div>
+			</div>
+			<hr>
+			<div>
 				Whitelisted hostnames (will always be ignored by HTTPZ)
 				<div class="fb">
 					<textarea autocomplete="off" class="browser-style" id="whitelist" rows="10" spellcheck="false"></textarea>
