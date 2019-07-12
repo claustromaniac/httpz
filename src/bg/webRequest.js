@@ -9,6 +9,7 @@ const filter = {urls: ["http://*/*"], types: ['main_frame']};
 const processed = new Set();
 const sfilter = {urls: ["https://*/*"], types: ['main_frame']};
 const warningPage = browser.runtime.getURL('pages/error.htm');
+const redirectPage = browser.runtime.getURL('pages/redirect.htm');
 const webReq = browser.webRequest;
 
 /** ---------- Functions ---------- **/
@@ -40,7 +41,7 @@ function isReservedAddress(str) {
 
 function downgrade(url, d) {
 	if (!sAPI.autoDowngrade) {
-		tabsData[d.tabId].url = url;
+		tabsData[d.tabId].url = d.url;
 		browser.tabs.update(d.tabId, {
 			loadReplace: true,
 			url: warningPage
@@ -85,8 +86,16 @@ webReq.onBeforeRequest.addListener(d => {
 webReq.onBeforeRedirect.addListener(d => {
 	const url = new URL(d.url);
 	const newTarget = new URL(d.redirectUrl);
-	if (newTarget.protocol === 'http:') ignore(url.hostname);
-	else if (processed.has(url.hostname)) {
+	if (newTarget.protocol === 'http:') {
+		if (sAPI.interceptRedirects && !isIgnored(url.hostname)) {
+			tabsData[d.tabId].url = url;
+			tabsData[d.tabId].redirectUrl = d.redirectUrl;
+			browser.tabs.update(d.tabId, {
+				loadReplace: true,
+				url: redirectPage
+			});
+		} else ignore(url.hostname);
+	} else if (processed.has(url.hostname)) {
 		processed.add(newTarget.hostname);
 		stackCleaner.run();
 	}
@@ -137,8 +146,10 @@ webReq.onErrorOccurred.addListener(d => {
 	console.info(`HTTPZ: ${d.error}`);
 	const url = new URL(d.url);
 	if (processed.has(url.hostname)) {
-		delete tabsData[d.tabId].loading;
-		if (tabsData[d.tabId].timerID) clearTimeout(tabsData[d.tabId].timerID);
+		if (tabsData[d.tabId]) {
+			delete tabsData[d.tabId].loading;
+			if (tabsData[d.tabId].timerID) clearTimeout(tabsData[d.tabId].timerID);
+		}
 		if (!exceptions.has(d.error)) downgrade(url, d);
 	}
 }, sfilter);

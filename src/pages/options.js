@@ -38,6 +38,7 @@ function refreshUI(data) {
 		ui.permanent.checked = data.ignorePeriod === -1;
 		ui.days.value = data.ignorePeriod;
 		ui.proxyCompat.checked = data.proxyCompat;
+		ui.interceptRedirects.checked = data.interceptRedirects;
 	}
 	if (data.hasOwnProperty('maxWait')) ui.maxWait.value = data.maxWait;
 	if (data.hasOwnProperty('rememberSecureSites')) ui.rememberSecureSites.checked = data.rememberSecureSites;
@@ -142,6 +143,7 @@ browser.runtime.sendMessage('options').then(msg => {
 		changes.rememberSecureSites = ui.rememberSecureSites.checked;
 		changes.whitelist = parseWhitelist(ui.whitelist.value);
 		changes.proxyCompat = ui.proxyCompat.checked;
+		changes.interceptRedirects = ui.interceptRedirects.checked;
 		local.set(changes).then(() => {
 			setStatus(ui.save, true);
 		});

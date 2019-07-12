@@ -23,6 +23,12 @@ browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 			return {
 				url: tabsData[id].url ? tabsData[id].url.toString() : undefined
 			};
+		} else if (msg.getRedirUrl) { // redirect.js
+			const id = sender.tab.id;
+			return {
+				url: tabsData[id].url,
+				redirectUrl: tabsData[id].redirectUrl
+			};
 		} else if (msg.ignore) {
 			ignore(msg.ignore);
 			return true;

@@ -48,6 +48,7 @@ const sAPI = {
 		'autoDowngrade': true,
 		'ignorePeriod': 7, //-1 = permanent, 0 = session-only, 1+ = X days
 		'incognitoWhitelist': {},
+		'interceptRedirects': false,
 		'knownSecure': {},
 		'maxWait': 0,
 		'proxyCompat': false,
@@ -114,7 +115,10 @@ function ignore(host) {
 		sAPI.ignored[host] = Date.now();
 		if (sAPI.ignorePeriod) ignoredSaver.run();
 	}
-	delete sAPI.knownSecure[host];
+	if (sAPI.knownSecure.hasOwnProperty(host)) {
+		delete sAPI.knownSecure[host];
+		secureSaver.run();
+	}
 }
 
 function isIgnored(host) {
