@@ -122,7 +122,7 @@ browser.runtime.sendMessage('options').then(msg => {
 		ui.save.disabled = true;
 		const changes = {};
 		if (ui.xdays.checked) {
-			if (!/^\d*[1-9]$/.test(ui.days.value.toString())) {
+			if (!ui.days.reportValidity()) {
 				setStatus(ui.save, false);
 				return;
 			}
@@ -133,7 +133,7 @@ browser.runtime.sendMessage('options').then(msg => {
 				changes.ignorePeriod = 0;
 			}
 		} else changes.ignorePeriod = -1;
-		if (/^\d+$/.test(ui.maxWait.value.toString())) {
+		if (ui.maxWait.reportValidity()) {
 			changes.maxWait = +ui.maxWait.value;
 		} else {
 			setStatus(ui.save, false);

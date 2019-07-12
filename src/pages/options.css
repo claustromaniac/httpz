@@ -35,6 +35,7 @@ textarea {
 	width: 100%;
 }
 input[type="file"] {display: none;}
+input[type="text"] {text-align-last: center !important;}
 #clearIgnored {align-self: flex-end;}
 #clearWhitelist {margin-top: 1em;}
 #save {font-weight: 700;}
