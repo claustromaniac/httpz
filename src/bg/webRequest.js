@@ -87,7 +87,7 @@ webReq.onBeforeRedirect.addListener(d => {
 	const newTarget = new URL(d.redirectUrl);
 	if (newTarget.protocol === 'http:') {
 		if (sAPI.interceptRedirects && !isIgnored(url.hostname)) {
-			tabsData[d.tabId].url = url;
+			tabsData[d.tabId].url = d.url;
 			tabsData[d.tabId].redirectUrl = d.redirectUrl;
 			browser.tabs.update(d.tabId, {
 				loadReplace: true,

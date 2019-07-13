@@ -1,6 +1,4 @@
 (() => {
 	'use strict';
-	browser.runtime.sendMessage({
-		tabLoaded: true
-	});
+	browser.runtime.sendMessage({tabLoaded: true});
 })();

@@ -20,9 +20,7 @@ browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 			delete sAPI.incognitoWhitelist[msg.host];
 		} else if (msg.getUrl) { // error.js
 			const id = sender.tab.id;
-			return {
-				url: tabsData[id].url ? tabsData[id].url.toString() : undefined
-			};
+			return {url: tabsData[id].url};
 		} else if (msg.getRedirUrl) { // redirect.js
 			const id = sender.tab.id;
 			return {
@@ -33,7 +31,7 @@ browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 			ignore(msg.ignore);
 			return true;
 		} else if (msg.tabLoaded) { // cs.js
-			delete tabsData[sender.tab.id].loading;
+			if (tabsData[sender.tab.id]) delete tabsData[sender.tab.id].loading;
 		}
 	})();
 });
