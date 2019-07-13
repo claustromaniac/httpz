@@ -69,17 +69,16 @@ webReq.onBeforeRequest.addListener(d => {
 		!isReservedAddress(url.hostname)
 	) {
 		if (tabsData[d.tabId].loading) {
-			ignore(url.hostname);
+			ignore(tabsData[d.tabId].loading);
 			delete tabsData[d.tabId].loading;
-		} else {
-			url.protocol = 'https:';
-			processed.add(url.hostname);
-			stackCleaner.run();
-			if (sAPI.maxWait) tabsData[d.tabId].timerID = setTimeout(() => {
-				downgrade(url, d);
-			}, sAPI.maxWait*1000);
-			return {redirectUrl: url.toString()}
 		}
+		url.protocol = 'https:';
+		processed.add(url.hostname);
+		stackCleaner.run();
+		if (sAPI.maxWait) tabsData[d.tabId].timerID = setTimeout(() => {
+			downgrade(url, d);
+		}, sAPI.maxWait*1000);
+		return {redirectUrl: url.toString()}
 	}
 }, filter, ['blocking']);
 
@@ -114,8 +113,10 @@ webReq.onBeforeRedirect.addListener(d => {
 }, filter);
 
 webReq.onResponseStarted.addListener(d => {
+	// triggered when an https response starts
+	// required only as part of the mechanism that detects non-standard redirections to http
 	const url = new URL(d.url);
-	if (processed.has(url.hostname)) tabsData[d.tabId].loading = true;
+	if (processed.has(url.hostname)) tabsData[d.tabId].loading = url.hostname;
 }, sfilter);
 
 webReq.onCompleted.addListener(d => {

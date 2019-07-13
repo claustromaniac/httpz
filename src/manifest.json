@@ -17,7 +17,7 @@
 		{
 			"matches": ["https://*/*"],
 			"js": ["cs.js"],
-			"run_at": "document_start"
+			"run_at": "document_end"
 		}
 	],
 	"description": "Zapping those inZecure connections into sublime submission since ~2018.",
