@@ -48,6 +48,7 @@ const sAPI = {
 		'autoDowngrade': true,
 		'ignorePeriod': 7, //-1 = permanent, 0 = session-only, 1+ = X days
 		'incognitoWhitelist': {},
+		'NSRedirectionsFix': true,
 		'interceptRedirects': false,
 		'knownSecure': {},
 		'maxWait': 0,

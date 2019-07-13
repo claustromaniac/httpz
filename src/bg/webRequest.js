@@ -68,7 +68,7 @@ webReq.onBeforeRequest.addListener(d => {
 		!isWhitelisted(url.hostname) &&
 		!isReservedAddress(url.hostname)
 	) {
-		if (tabsData[d.tabId].loading) {
+		if (sAPI.NSRedirectionsFix && tabsData[d.tabId].loading) {
 			ignore(tabsData[d.tabId].loading);
 			delete tabsData[d.tabId].loading;
 		}
