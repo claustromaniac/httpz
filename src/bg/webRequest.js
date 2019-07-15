@@ -104,8 +104,10 @@ webReq.onBeforeRedirect.addListener(d => {
 	const url = new URL(d.url);
 	const newTarget = new URL(d.redirectUrl);
 	if (newTarget.protocol === 'https:') {
-		if (isWhitelisted(url.hostname)) processed.delete(url.hostname);
-		if (isWhitelisted(newTarget.hostname)) processed.delete(newTarget.hostname);
+		if (
+			isWhitelisted(newTarget.hostname) || 
+			isIgnored(newTarget.hostname)
+		) processed.delete(newTarget.hostname);
 	} else {
 		processed.add(newTarget.hostname);
 		stackCleaner.run();
