@@ -14,6 +14,7 @@
 					</label>
 				</div>
 			</div>
+			<hr>
 			<div>
 				This intercepts redirections from HTTPS to HTTP and shows a warning, allowing you to decide what to do.
 				<div class="browser-style fb">
@@ -22,6 +23,7 @@
 					</label>
 				</div>
 			</div>
+			<hr>
 			<div>
 				This fixes rare redirection loops, but is not a perfect solution. Disable if HTTPS is a strict requirement to you, but note that a few sites will get stuck loading forever.
 				<div class="browser-style fb">
@@ -30,6 +32,7 @@
 					</label>
 				</div>
 			</div>
+			<hr>
 			<div>
 				Enable this if you connect through a forward proxy or gateway and HTTPZ causes it to respond with status codes 502 and/or 504 frequently.
 				<div class="browser-style fb">
@@ -38,6 +41,7 @@
 					</label>
 				</div>
 			</div>
+			<hr>
 			<div>
 				The initial request to some sites that do not support HTTPS can take long to time out. HTTPZ will never wait longer than the time specified here before retrying requests over HTTP. Set to 0 to wait until the browser gives up (default).
 				<div class="browser-style fb">
@@ -46,13 +50,12 @@
 			</div>
 			<hr>
 			<div>
-				Every time that you navigate to a site that loads successfully over HTTPS, HTTPZ remembers its hostname, so as to avoid redirecting it to HTTP if it ever fails in the future. This minimizes the risk of a <abbr title="Man in the Middle">MitM</abbr> being able to exploit the extension's behavior. Do not disable this unless you know what you are doing.
+				Every time that you navigate to a site that loads successfully over HTTPS, HTTPZ remembers its hostname, so as to avoid redirecting it to HTTP if it ever fails in the future. This minimizes the risk of a <abbr title="Man in the Middle">MitM</abbr> being able to exploit the extension's behavior. <span class="red">Do not disable this unless you know what you are doing.</span>
 				<div class="browser-style fb">
 					<input id="rememberSecureSites" type="checkbox"><label for="rememberSecureSites">
 						Remember Secure Sites
 					</label>
 					<div class="inlb fill"></div>
-					<button class="browser-style wide" id="clearSecure" type="button">Forget Secure Sites</button>
 				</div>
 			</div>
 			<hr>

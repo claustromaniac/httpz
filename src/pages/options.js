@@ -67,6 +67,7 @@ function setStatus(button, success) {
 }
 
 browser.runtime.sendMessage('options').then(msg => {
+	let clearSecure;
 	const changePeriod = e => {
 		ui.days.disabled = !ui.xdays.checked;
 		if (!ui.days.value) ui.days.value = 7;
@@ -74,14 +75,14 @@ browser.runtime.sendMessage('options').then(msg => {
 	ui.session.onchange = changePeriod;
 	ui.xdays.onchange = changePeriod;
 	ui.permanent.onchange = changePeriod;
+	ui.rememberSecureSites.onchange = e => {
+		if (!e.target.checked && confirm('Do you also want to clear the list of secure sites?\n\n(Click \'Cancel\' if you plan to re-enable this later on)')) {
+			clearSecure = true;
+		}
+	};
 	ui.clearIgnored.onclick = e => {
 		local.set({ignored: {}}).then(() => {
 			setStatus(ui.clearIgnored, true);
-		});
-	};
-	ui.clearSecure.onclick = e => {
-		local.set({knownSecure: {}}).then(() => {
-			setStatus(ui.clearSecure, true);
 		});
 	};
 	ui.clearWhitelist.onclick = e => {
@@ -142,6 +143,10 @@ browser.runtime.sendMessage('options').then(msg => {
 		}
 		changes.autoDowngrade = ui.autoDowngrade.checked;
 		changes.rememberSecureSites = ui.rememberSecureSites.checked;
+		if (clearSecure) {
+			changes.knownSecure = {};
+			clearSecure = false;
+		}
 		changes.whitelist = parseWhitelist(ui.whitelist.value);
 		changes.proxyCompat = ui.proxyCompat.checked;
 		changes.interceptRedirects = ui.interceptRedirects.checked;

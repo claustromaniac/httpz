@@ -15,6 +15,7 @@
 }
 .inlb {display: inline-block;}
 .num {width: 3.5em;}
+.red {color: red;}
 code, fieldset, textarea {border-radius: 5px;}
 body > * {
 	margin: 0.5em auto;
