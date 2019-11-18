@@ -75,7 +75,7 @@ webReq.onBeforeRequest.addListener(d => {
 		}
 		url.protocol = 'https:';
 		processed.add(url.hostname);
-		stackCleaner.run();
+		setCleaner.run();
 		if (sAPI.maxWait) tabsData[d.tabId].timerID = setTimeout(() => {
 			downgrade(url, d);
 		}, sAPI.maxWait*1000);
@@ -97,7 +97,7 @@ webReq.onBeforeRedirect.addListener(d => {
 		} else ignore(url.hostname);
 	} else if (processed.has(url.hostname)) {
 		processed.add(newTarget.hostname);
-		stackCleaner.run();
+		setCleaner.run();
 	}
 }, sfilter);
 

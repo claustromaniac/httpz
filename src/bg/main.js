@@ -37,7 +37,7 @@ const ignoredSaver = new DelayableAction(10, 60, () => {
 const secureSaver = new DelayableAction(10, 120, () => {
 	local.set({knownSecure: sAPI.knownSecure});
 });
-const stackCleaner = new DelayableAction(100, 300, () => {
+const setCleaner = new DelayableAction(100, 300, () => {
 	processed.clear();
 }, 10);
 const tabsData = {};
