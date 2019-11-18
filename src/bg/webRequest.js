@@ -66,6 +66,7 @@ webReq.onBeforeRequest.addListener(d => {
 	if (
 		!isIgnored(url.hostname) &&
 		!isWhitelisted(url.hostname) &&
+		!url.hostname.endsWith('.onion') &&
 		!isReservedAddress(url.hostname)
 	) {
 		if (sAPI.NSRedirectionsFix && tabsData[d.tabId].loading) {
