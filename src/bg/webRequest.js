@@ -86,8 +86,17 @@ webReq.onBeforeRequest.addListener(d => {
 webReq.onBeforeRedirect.addListener(d => {
 	const url = new URL(d.url);
 	const newTarget = new URL(d.redirectUrl);
+	let downgrading;
 	if (newTarget.protocol === 'http:') {
-		if (sAPI.interceptRedirects && !isIgnored(url.hostname)) {
+		downgrading = true;
+		newTarget.protocol = 'https:';
+	}
+	if (downgrading && d.url === newTarget.toString()) {
+		if (
+			sAPI.interceptRedirects && 
+			!isIgnored(newTarget.hostname) &&
+			!isWhitelisted(newTarget.hostname)
+		) {
 			tabsData[d.tabId].url = d.url;
 			tabsData[d.tabId].redirectUrl = d.redirectUrl;
 			browser.tabs.update(d.tabId, {
@@ -111,7 +120,6 @@ webReq.onBeforeRedirect.addListener(d => {
 }, filter);
 
 webReq.onResponseStarted.addListener(d => {
-	// triggered when an https response starts
 	// required only as part of the mechanism that detects non-standard redirections to http
 	const url = new URL(d.url);
 	if (processed.has(url.hostname)) tabsData[d.tabId].loading = url.hostname;
