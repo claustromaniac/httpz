@@ -102,17 +102,12 @@ webReq.onBeforeRedirect.addListener(d => {
 }, sfilter);
 
 webReq.onBeforeRedirect.addListener(d => {
-	const url = new URL(d.url);
 	const newTarget = new URL(d.redirectUrl);
-	if (newTarget.protocol === 'https:') {
-		if (
-			isWhitelisted(newTarget.hostname) || 
-			isIgnored(newTarget.hostname)
-		) processed.delete(newTarget.hostname);
-	} else {
-		processed.add(newTarget.hostname);
-		stackCleaner.run();
-	}
+	if (
+		newTarget.protocol === 'https:' &&
+		isWhitelisted(newTarget.hostname) || 
+		isIgnored(newTarget.hostname)
+	) processed.delete(newTarget.hostname);
 }, filter);
 
 webReq.onResponseStarted.addListener(d => {
