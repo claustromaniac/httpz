@@ -98,7 +98,6 @@ webReq.onBeforeRedirect.addListener(d => {
 			!isWhitelisted(newTarget.hostname)
 		) {
 			tabsData[d.tabId].url = d.url;
-			tabsData[d.tabId].redirectUrl = d.redirectUrl;
 			browser.tabs.update(d.tabId, {
 				loadReplace: true,
 				url: redirectPage
