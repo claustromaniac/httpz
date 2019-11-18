@@ -8,6 +8,7 @@ browser.runtime.sendMessage({getUrl: true}).then(msg => {
 	ui.continue.disabled = false;
 	const url = new URL(msg.url);
 	ui.hostname.textContent = url.hostname;
+	ui.abbr.title = msg.url;
 	ui.continue.onclick = e => {
 		ui.retry.disabled = true;
 		ui.continue.disabled = true;
