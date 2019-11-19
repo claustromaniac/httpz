@@ -31,8 +31,9 @@ class DelayableAction {
 
 const local = browser.storage.local;
 const tabs = browser.tabs;
-tabs.update57 = tabs.update;
-tabs.update = async function (id, p) { //FF 56 compatibility
+//FF56 compatibility
+tabs.update57 = tabs.update;	
+tabs.update = async function (id, p) { 
 	try {
 		await tabs.update57(id, p);
 		tabs.update = tabs.update57;
@@ -43,7 +44,7 @@ tabs.update = async function (id, p) { //FF 56 compatibility
 			ex.message &&
 			ex.message.includes('loadReplace')
 		) {
-			tabs.update = function (id_, p_) {
+			tabs.update = async function (id_, p_) {
 				delete p_.loadReplace;
 				tabs.update57(id_, p_);
 			}
