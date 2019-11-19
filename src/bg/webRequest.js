@@ -63,6 +63,11 @@ function downgrade(url, d) {
 
 webReq.onBeforeRequest.addListener(d => {
 	const url = new URL(d.url);
+	if (tabsData[d.tabId].intercepting) {
+		const intercepting = tabsData[d.tabId].intercepting;
+		delete tabsData[d.tabId].intercepting;
+		if (intercepting === url.hostname) return {cancel: true};
+	}
 	if (
 		!isIgnored(url.hostname) &&
 		!isWhitelisted(url.hostname) &&
@@ -92,16 +97,18 @@ webReq.onBeforeRedirect.addListener(d => {
 		newTarget.protocol = 'https:';
 	}
 	if (downgrading && d.url === newTarget.toString()) {
-		if (
-			sAPI.interceptRedirects && 
-			!isIgnored(newTarget.hostname) &&
-			!isWhitelisted(newTarget.hostname)
-		) {
-			tabsData[d.tabId].url = d.url;
-			browser.tabs.update(d.tabId, {
-				loadReplace: true,
-				url: redirectPage
-			});
+		if (sAPI.interceptRedirects) {
+			if (
+				!isIgnored(url.hostname) && 
+				!isWhitelisted(url.hostname)
+			) {
+				tabsData[d.tabId].intercepting = url.hostname;
+				tabsData[d.tabId].url = d.url;
+				browser.tabs.update(d.tabId, {
+					loadReplace: true,
+					url: redirectPage
+				});
+			}
 		} else ignore(url.hostname);
 	} else if (processed.has(url.hostname)) {
 		processed.add(newTarget.hostname);
