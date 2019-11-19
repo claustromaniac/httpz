@@ -105,7 +105,7 @@ browser.runtime.sendMessage('options').then(msg => {
 						refreshUI(data);
 						setStatus(ui.fakeFileInput, true);
 					} else throw 'SyntaxError';
-				} catch {
+				} catch (ex) {
 					setStatus(ui.fakeFileInput, false);
 					alert('Error. Invalid file (?)');
 				};
