@@ -20,7 +20,7 @@ browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 			);
 		} else if (msg.host) {
 			wlSaver.run();
-			delete sAPI.whitelist[msg.host]
+			delete sAPI.whitelist[msg.host];
 			delete sAPI.incognitoWhitelist[msg.host];
 			tabs.reload(msg.tabId);
 		} else if (msg.getUrl) { // error.js, redirect.js
