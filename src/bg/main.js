@@ -36,8 +36,13 @@ tabs.update = async function (id, p) { //FF 56 compatibility
 	try {
 		await tabs.update57(id, p);
 		tabs.update = tabs.update57;
+		delete tabs.update57;
 	} catch (ex) {
-		if (ex.includes('loadReplace')) {
+		if (
+			typeof ex === 'object' &&
+			ex.message &&
+			ex.message.includes('loadReplace')
+		) {
 			tabs.update = function (id_, p_) {
 				delete p_.loadReplace;
 				tabs.update57(id_, p_);
