@@ -1,7 +1,5 @@
 'use strict';
 
-const tabs = browser.tabs;
-
 tabs.onCreated.addListener(tab => {
 	tabsData[tab.id] = {};
 });

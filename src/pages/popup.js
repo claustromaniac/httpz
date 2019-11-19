@@ -12,15 +12,12 @@ browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
 		if (incognito) ui.incognito.textContent = 'Note: sites added to the whitelist from a private window will not be visible in the options page';
 		ui.whitelist.onclick = e => {
 			ui.whitelist.disabled = true;
+			url.protocol = 'http:';
 			browser.runtime.sendMessage({
 				host: url.hostname,
+				tabId: tab.id,
+				url: url.toString(),
 				value: incognito ? 2 : 1
-			}).then(() => {
-				url.protocol = 'http:';
-				browser.tabs.update(
-					tab.id,
-					{ loadReplace: true, url: url.toString() }
-				);
 			});
 		};
 	} else {
@@ -28,8 +25,10 @@ browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
 		ui.whitelist.textContent = 'remove from whitelist';
 		ui.whitelist.onclick = e => {
 			ui.whitelist.disabled = true;
-			browser.runtime.sendMessage({host: url.hostname, value: false}).then(() => {
-				browser.tabs.reload(tab.id);
+			browser.runtime.sendMessage({
+				host: url.hostname, 
+				tabId: tab.id,
+				value: false
 			});
 		};
 	}

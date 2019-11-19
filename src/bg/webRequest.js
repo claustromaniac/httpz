@@ -42,7 +42,7 @@ function isReservedAddress(str) {
 function downgrade(url, d) {
 	if (!sAPI.autoDowngrade) {
 		tabsData[d.tabId].url = d.url;
-		browser.tabs.update(d.tabId, {
+		tabs.update(d.tabId, {
 			loadReplace: true,
 			url: warningPage
 		});
@@ -52,7 +52,7 @@ function downgrade(url, d) {
 	) {
 		ignore(url.hostname);
 		url.protocol = 'http:';
-		browser.tabs.update(
+		tabs.update(
 			d.tabId,
 			{ loadReplace: true, url: url.toString() }
 		);
@@ -104,7 +104,7 @@ webReq.onBeforeRedirect.addListener(d => {
 			) {
 				tabsData[d.tabId].intercepting = url.hostname;
 				tabsData[d.tabId].url = d.url;
-				browser.tabs.update(d.tabId, {
+				tabs.update(d.tabId, {
 					loadReplace: true,
 					url: redirectPage
 				});

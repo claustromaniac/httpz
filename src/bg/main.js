@@ -30,6 +30,22 @@ class DelayableAction {
 }
 
 const local = browser.storage.local;
+const tabs = browser.tabs;
+tabs.update57 = tabs.update;
+tabs.update = async function (id, p) { //FF 56 compatibility
+	try {
+		await tabs.update57(id, p);
+		tabs.update = tabs.update57;
+	} catch (ex) {
+		if (ex.includes('loadReplace')) {
+			tabs.update = function (id_, p_) {
+				delete p_.loadReplace;
+				tabs.update57(id_, p_);
+			}
+			tabs.update(id, p);
+		}
+	}
+};
 
 const ignoredSaver = new DelayableAction(10, 60, () => {
 	if (sAPI.ignorePeriod) local.set({ignored: sAPI.ignored});
