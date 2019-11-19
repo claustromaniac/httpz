@@ -25,7 +25,7 @@
 			</div>
 			<hr>
 			<div>
-				This fixes rare redirection loops, but is not a perfect solution. Disable if HTTPS is a strict requirement to you, but note that a few sites will get stuck loading forever.
+				This fixes rare redirection loops, but is not a perfect solution. Disable if HTTPS is a strict requirement to you, but note that a few sites will get stuck reloading endlessly in a loop.
 				<div class="browser-style fb">
 					<input id="NSRedirectionsFix" type="checkbox"><label for="NSRedirectionsFix">
 						Handle non-standard redirections to HTTP
@@ -50,7 +50,7 @@
 			</div>
 			<hr>
 			<div>
-				Every time that you navigate to a site that loads successfully over HTTPS, HTTPZ remembers its hostname, so as to avoid redirecting it to HTTP if it ever fails in the future. This minimizes the risk of a <abbr title="Man in the Middle">MitM</abbr> being able to exploit the extension's behavior. <span class="red">Do not disable this unless you know what you are doing.</span>
+				Every time that you navigate to a site that loads successfully over HTTPS, HTTPZ remembers its hostname, so as to avoid redirecting it back to HTTP if it ever fails in the future. This minimizes the risk of a <abbr title="Man in the Middle">MitM</abbr> being able to exploit the extension's behavior. <span class="red">Do not disable this unless you know what you are doing.</span>
 				<div class="browser-style fb">
 					<input id="rememberSecureSites" type="checkbox"><label for="rememberSecureSites">
 						Remember Secure Sites
@@ -60,7 +60,7 @@
 			</div>
 			<hr>
 			<div>
-				When a site does not support HTTPS, ignore requests to it...
+				After determining that a site does not support HTTPS, start ignoring requests to it...
 				<div class="fb">
 					<div class="inlb">
 						<div class="browser-style fb">
@@ -73,7 +73,7 @@
 							</div> day(s)</label>
 						</div>
 						<div class="browser-style fb">
-							<input id="permanent" name="period" type="radio"><label for="permanent">always</label>
+							<input id="permanent" name="period" type="radio"><label for="permanent">forever</label>
 						</div>
 					</div>
 					<div class="inlb fill"></div>
@@ -82,7 +82,7 @@
 			</div>
 			<hr>
 			<div>
-				Whitelisted hostnames (will always be ignored by HTTPZ)
+				Whitelisted hostnames (i.e. sites ignored unconditionally)
 				<div class="fb">
 					<textarea autocomplete="off" class="browser-style" id="whitelist" rows="10" spellcheck="false"></textarea>
 					<div class="inlb fill"></div>
