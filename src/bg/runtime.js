@@ -14,15 +14,12 @@ browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 			wlSaver.run();
 			if (msg.value === 2) sAPI.incognitoWhitelist[msg.host] = null;
 			else sAPI.whitelist[msg.host] = null;
-			tabs.update(
-				msg.tabId, 
-				{ loadReplace: true, url: msg.url }
-			);
+			tabs.update( msg.tabId, {loadReplace: true, url: msg.url} );
 		} else if (msg.host) {
 			wlSaver.run();
 			delete sAPI.whitelist[msg.host];
 			delete sAPI.incognitoWhitelist[msg.host];
-			tabs.reload(msg.tabId);
+			tabs.reload( msg.tabId, {bypassCache: true} );
 		} else if (msg.getUrl) { // error.js, redirect.js
 			const id = sender.tab.id;
 			return {url: tabsData[id].url};
