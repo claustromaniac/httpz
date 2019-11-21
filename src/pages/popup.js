@@ -19,6 +19,7 @@ browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
 				url: url.toString(),
 				value: incognito ? 2 : 1
 			});
+			close();
 		};
 	} else {
 		ui.info.textContent = `HTTPZ did not try to redirect ${url.hostname} to HTTPS because it is in the whitelist. If you click the button below, this site will be removed from the whitelist and the tab will be reloaded`;
@@ -30,6 +31,7 @@ browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
 				tabId: tab.id,
 				value: false
 			});
+			close();
 		};
 	}
 });
