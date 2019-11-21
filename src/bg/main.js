@@ -47,7 +47,7 @@ tabs.update = async function (id, p) {
 			tabs.update = async function (id_, p_) {
 				delete p_.loadReplace;
 				tabs.update57(id_, p_);
-			}
+			};
 			tabs.update(id, p);
 		}
 	}
