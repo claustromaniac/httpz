@@ -141,7 +141,7 @@ webReq.onCompleted.addListener(d => {
 			console.info(`HTTPZ: status code ${d.statusCode} (Proxy-Compatible Mode)`);
 			return downgrade(url, d);
 		}
-		browser.pageAction.show(d.tabId);
+		if (!isWhitelisted(url.hostname)) browser.pageAction.show(d.tabId);
 		if (tabsData[d.tabId].timerID) clearTimeout(tabsData[d.tabId].timerID);
 	}
 	if (sAPI.rememberSecureSites && !sAPI.knownSecure.hasOwnProperty(url.hostname)) {
