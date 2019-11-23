@@ -64,7 +64,7 @@ async function promisify(rv) {return rv};
 const preventCaching = d => {
 	if (!d.responseHeaders) return;
 	const url = new URL(d.url);
-	if (!processed.has(url.hostname) || url.protocol !== 'https:') return;
+	if (!processed.has(url.hostname)) return;
 	const newHeaders = d.responseHeaders.filter(h => {
 		return h.name.toLowerCase() !== 'cache-control';
 	});
@@ -105,12 +105,6 @@ webReq.onBeforeRequest.addListener(d => {
 		}); 
 	}
 }, filter, ['blocking']);
-
-webReq.onHeadersReceived.addListener(
-	preventCaching,
-	filter, 
-	['blocking', 'responseHeaders']
-);
 
 webReq.onHeadersReceived.addListener(
 	preventCaching,
