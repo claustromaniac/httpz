@@ -61,6 +61,20 @@ function downgrade(url, d) {
 
 async function promisify(rv) {return rv};
 
+const preventCaching = d => {
+	if (!d.responseHeaders) return;
+	const url = new URL(d.url);
+	if (!processed.has(url.hostname) || url.protocol !== 'https:') return;
+	const newHeaders = d.responseHeaders.filter(h => {
+		return h.name.toLowerCase() !== 'cache-control';
+	});
+	newHeaders.push({
+		name: 'Cache-Control', 
+		value: 'no-cache, no store, must-revalidate'
+	});
+	return promisify({responseHeaders: newHeaders});
+};
+
 /** ------------------------------ **/
 
 webReq.onBeforeRequest.addListener(d => {
@@ -91,6 +105,18 @@ webReq.onBeforeRequest.addListener(d => {
 		}); 
 	}
 }, filter, ['blocking']);
+
+webReq.onHeadersReceived.addListener(
+	preventCaching,
+	filter, 
+	['blocking', 'responseHeaders']
+);
+
+webReq.onHeadersReceived.addListener(
+	preventCaching,
+	sfilter, 
+	['blocking', 'responseHeaders']
+);
 
 webReq.onBeforeRedirect.addListener(d => {
 	const url = new URL(d.url);
@@ -145,7 +171,7 @@ webReq.onCompleted.addListener(d => {
 			console.info(`HTTPZ: status code ${d.statusCode} (Proxy-Compatible Mode)`);
 			return downgrade(url, d);
 		}
-		if (!isWhitelisted(url.hostname)) browser.pageAction.show(d.tabId);
+		if (!isWhitelisted(url.hostname)) pageAction.show(d.tabId);
 		if (tabsData[d.tabId].timerID) clearTimeout(tabsData[d.tabId].timerID);
 	}
 	if (sAPI.rememberSecureSites && !sAPI.knownSecure.hasOwnProperty(url.hostname)) {
@@ -156,7 +182,7 @@ webReq.onCompleted.addListener(d => {
 
 webReq.onCompleted.addListener(d => {
 	const url = new URL(d.url);
-	if (isWhitelisted(url.hostname)) browser.pageAction.show(d.tabId);
+	if (isWhitelisted(url.hostname)) pageAction.show(d.tabId);
 }, filter);
 
 webReq.onErrorOccurred.addListener(d => {

@@ -30,6 +30,7 @@ class DelayableAction {
 }
 
 const local = browser.storage.local;
+const pageAction = browser.pageAction;
 const tabs = browser.tabs;
 //FF56 compatibility
 tabs.update57 = tabs.update;	
