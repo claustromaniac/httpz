@@ -59,6 +59,8 @@ function downgrade(url, d) {
 	}
 }
 
+async function promisify(rv) {return rv};
+
 /** ------------------------------ **/
 
 webReq.onBeforeRequest.addListener(d => {
@@ -66,7 +68,7 @@ webReq.onBeforeRequest.addListener(d => {
 	if (tabsData[d.tabId].intercepting) {
 		const intercepting = tabsData[d.tabId].intercepting;
 		delete tabsData[d.tabId].intercepting;
-		if (intercepting === url.hostname) return {cancel: true};
+		if (intercepting === url.hostname) return promisify({cancel: true});
 	}
 	if (
 		!isIgnored(url.hostname) &&
@@ -84,7 +86,9 @@ webReq.onBeforeRequest.addListener(d => {
 		if (sAPI.maxWait) tabsData[d.tabId].timerID = setTimeout(() => {
 			downgrade(url, d);
 		}, sAPI.maxWait*1000);
-		return {redirectUrl: url.toString()}
+		return promisify({
+			redirectUrl: url.toString()
+		}); 
 	}
 }, filter, ['blocking']);
 
