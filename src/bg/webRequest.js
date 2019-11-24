@@ -46,11 +46,8 @@ function downgrade(url, d) {
 			loadReplace: true,
 			url: warningPage
 		});
-	} else if (
-		!sAPI.rememberSecureSites ||
-		!sAPI.knownSecure.hasOwnProperty(url.hostname)
-	) {
-		ignore(url.hostname);
+	} else if (!sAPI.rememberSecureSites || !isKnown(url.hostname)) {
+		ignore(url.hostname, d.tabId);
 		url.protocol = 'http:';
 		tabs.update(
 			d.tabId,
@@ -91,7 +88,7 @@ webReq.onBeforeRequest.addListener(d => {
 		!isReservedAddress(url.hostname)
 	) {
 		if (sAPI.NSRedirectionsFix && tabsData[d.tabId].loading) {
-			ignore(tabsData[d.tabId].loading);
+			ignore(tabsData[d.tabId].loading, d.tabId);
 			delete tabsData[d.tabId].loading;
 		}
 		url.protocol = 'https:';
@@ -133,7 +130,7 @@ webReq.onBeforeRedirect.addListener(d => {
 					url: redirectPage
 				});
 			}
-		} else ignore(url.hostname);
+		} else ignore(url.hostname, d.tabId);
 	} else if (processed.has(url.hostname)) {
 		processed.add(newTarget.hostname);
 		setCleaner.run();
@@ -168,10 +165,7 @@ webReq.onCompleted.addListener(d => {
 		if (!isWhitelisted(url.hostname)) pageAction.show(d.tabId);
 		if (tabsData[d.tabId].timerID) clearTimeout(tabsData[d.tabId].timerID);
 	}
-	if (sAPI.rememberSecureSites && !sAPI.knownSecure.hasOwnProperty(url.hostname)) {
-		sAPI.knownSecure[url.hostname] = null;
-		secureSaver.run();
-	}
+	if (sAPI.rememberSecureSites) remember(url.hostname, d.tabId);
 }, sfilter);
 
 webReq.onCompleted.addListener(d => {
@@ -193,7 +187,8 @@ webReq.onErrorOccurred.addListener(d => {
 
 webReq.onErrorOccurred.addListener(d => {
 	const url = new URL(d.url);
-	if (sAPI.ignored[url.hostname] && processed.has(url.hostname)) {
+	if (processed.has(url.hostname) && isIgnored(url.hostname)) {
 		delete sAPI.ignored[url.hostname];
+		delete sAPI.ignored_pb[url.hostname];
 	}
 }, filter);

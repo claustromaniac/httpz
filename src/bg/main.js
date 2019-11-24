@@ -67,11 +67,14 @@ const tabsData = {};
 
 const sAPI = {
 	ignored: {}, // hostname:unixTimeStamp pairs
+	ignored_pb: {},
+	knownSecure_pb: {},
 	defaults: {
 		'autoDowngrade': true,
 		'ignorePeriod': 7, //-1 = permanent, 0 = session-only, 1+ = X days
 		'incognitoWhitelist': {},
 		'NSRedirectionsFix': true,
+		'honorPB': true,
 		'interceptRedirects': false,
 		'knownSecure': {},
 		'maxWait': 0,
@@ -134,13 +137,24 @@ function daysSince(unixTimeStamp) {
 	return (Date.now() - unixTimeStamp) / 86400000;
 }
 
-function ignore(host) {
-	if (!sAPI.ignored[host]) {
+function ignore(host, tabId) {
+	if (sAPI.honorPB && tabsData[tabId].incognito) {
+		if (!sAPI.ignored_pb[host]) sAPI.ignored_pb[host] = Date.now();
+	} else if (!sAPI.ignored[host]) {
 		sAPI.ignored[host] = Date.now();
 		if (sAPI.ignorePeriod) ignoredSaver.run();
 	}
-	if (sAPI.knownSecure.hasOwnProperty(host)) {
+	if (isKnown(host)) {
 		delete sAPI.knownSecure[host];
+		delete sAPI.knownSecure_pb[host];
+		secureSaver.run();
+	}
+}
+
+function remember(host, tabId) {
+	if (sAPI.honorPB && tabsData[tabId].incognito) sAPI.knownSecure_pb[host] = null;
+	else {
+		sAPI.knownSecure[host] = null;
 		secureSaver.run();
 	}
 }
@@ -152,7 +166,11 @@ function isIgnored(host) {
 			delete sAPI.ignored[host];
 		}
 	}
-	return sAPI.ignored[host];
+	return sAPI.ignored[host] || sAPI.ignored_pb[host];
+}
+
+function isKnown(host) {
+	return sAPI.knownSecure.hasOwnProperty(host) || sAPI.knownSecure_pb.hasOwnProperty(host);
 }
 
 function isWhitelisted(host) {

@@ -50,6 +50,20 @@
 			</div>
 			<hr>
 			<div>
+				Enabled: potentially compromising information required by some features is never saved to disk whenever it comes from a Private Browsing window, and is only stored in RAM instead. This includes:
+				<ul>
+					<li>ignored sites</li>
+					<li>known secure sites</li>
+				</ul>
+				Disabled: data coming from Private Browsing windows is not given any special treatment
+				<div class="browser-style fb">
+					<input id="honorPB" type="checkbox"><label for="honorPB">
+						Honor Private Browsing
+					</label>
+				</div>
+			</div>
+			<hr>
+			<div>
 				Every time that you navigate to a site that loads successfully over HTTPS, HTTPZ remembers its hostname, so as to avoid redirecting it back to HTTP if it ever fails in the future. This minimizes the risk of a <abbr title="Man in the Middle">MitM</abbr> being able to exploit the extension's behavior. <span class="red">Do not disable this unless you know what you are doing.</span>
 				<div class="browser-style fb">
 					<input id="rememberSecureSites" type="checkbox"><label for="rememberSecureSites">

@@ -1,7 +1,7 @@
 'use strict';
 
 tabs.onCreated.addListener(tab => {
-	tabsData[tab.id] = {};
+	tabsData[tab.id] = {incognito: tab.incognito};
 });
 tabs.onRemoved.addListener((tabId, removeInfo) => {delete tabsData[tabId]});
 tabs.onUpdated.addListener((id, info, tab) => {
@@ -13,5 +13,5 @@ tabs.onUpdated.addListener((id, info, tab) => {
 	) pageAction.show(id);
 }, {properties: ['status']});
 tabs.query({}).then(r => {
-	for (const tab of r) tabsData[tab.id] = {};
+	for (const tab of r) tabsData[tab.id] = {incognito: tab.incognito};
 });

@@ -24,7 +24,7 @@ browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 			const id = sender.tab.id;
 			return {url: tabsData[id].url};
 		} else if (msg.ignore) {
-			ignore(msg.ignore);
+			ignore(msg.ignore, sender.tab.id);
 			return true;
 		} else if (msg.tabLoaded) { // cs.js
 			if (tabsData[sender.tab.id]) delete tabsData[sender.tab.id].loading;

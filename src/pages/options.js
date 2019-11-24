@@ -31,6 +31,7 @@ function populateWhitelist(obj) {
 
 function refreshUI(data) {
 	if (data.hasOwnProperty('autoDowngrade')) ui.autoDowngrade.checked = data.autoDowngrade;
+	if (data.hasOwnProperty('honorPB')) ui.honorPB.checked = data.honorPB;
 	if (data.hasOwnProperty('ignorePeriod')) {
 		ui.session.checked = !data.ignorePeriod;
 		ui.xdays.checked = data.ignorePeriod > 0;
@@ -142,6 +143,7 @@ browser.runtime.sendMessage('options').then(msg => {
 			return;
 		}
 		changes.autoDowngrade = ui.autoDowngrade.checked;
+		changes.honorPB = ui.honorPB.checked;
 		changes.rememberSecureSites = ui.rememberSecureSites.checked;
 		if (clearSecure) {
 			changes.knownSecure = {};
