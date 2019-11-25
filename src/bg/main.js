@@ -31,23 +31,24 @@ class DelayableAction {
 
 const local = browser.storage.local;
 const pageAction = browser.pageAction;
+const runtime = browser.runtime;
 const tabs = browser.tabs;
 //FF56 compatibility
-tabs.update57 = tabs.update;	
+tabs._update = tabs.update;	
 tabs.update = async function (id, p) { 
 	try {
-		await tabs.update57(id, p);
-		tabs.update = tabs.update57;
-		delete tabs.update57;
+		await tabs._update(id, p);
+		tabs.update = tabs._update;
+		delete tabs._update;
 	} catch (ex) {
 		if (
 			typeof ex === 'object' &&
 			ex.message &&
 			ex.message.includes('loadReplace')
 		) {
-			tabs.update = async function (id_, p_) {
-				delete p_.loadReplace;
-				tabs.update57(id_, p_);
+			tabs.update = async function (_id, _p) {
+				delete _p.loadReplace;
+				tabs._update(_id, _p);
 			};
 			tabs.update(id, p);
 		}
@@ -122,13 +123,17 @@ sAPI.loading = (async () => {
 
 sAPI.loading.then(() => {
 	browser.storage.onChanged.addListener((changes, area) => {
-		console.debug(`HTTPZ: ${area} storage changed`);
+		console.debug(`HTTPZ: ${area} storage changed`, changes);
 		for (const i in changes) sAPI[i] = changes[i].newValue;
 		if (changes.ignorePeriod) {
 			local.set({
 				ignored: changes.ignorePeriod.newValue ? sAPI.ignored : {}
 			});
 			sAPI.init();
+		}
+		if (changes.honorPB && !changes.honorPB.newValue) {
+			sAPI.ignored_pb = {};
+			sAPI.knownSecure_pb = {};
 		}
 	});
 });

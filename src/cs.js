@@ -1,7 +1,9 @@
 (() => {
 	'use strict';
 	browser.runtime.sendMessage({
-		tabHost: location.host,
+		action: 'content script',
+		host: location.host,
+		protocol: location.protocol,
 		tabLoaded: true
 	});
 })();

@@ -14,10 +14,10 @@ browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
 			ui.whitelist.disabled = true;
 			url.protocol = 'http:';
 			browser.runtime.sendMessage({
+				action: 'add to whitelist',
 				host: url.hostname,
-				tabId: tab.id,
-				url: url.toString(),
-				value: incognito ? 2 : 1
+				incognito: incognito,
+				url: url.toString()
 			}).then(() => {close();});
 		};
 	} else {
@@ -26,9 +26,8 @@ browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
 		ui.whitelist.onclick = e => {
 			ui.whitelist.disabled = true;
 			browser.runtime.sendMessage({
-				host: url.hostname, 
-				tabId: tab.id,
-				value: false
+				action: 'remove from whitelist',
+				host: url.hostname
 			}).then(() => {close();});
 		};
 	}

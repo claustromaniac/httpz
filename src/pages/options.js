@@ -67,7 +67,7 @@ function setStatus(button, success) {
 	}, 1000);
 }
 
-browser.runtime.sendMessage('options').then(msg => {
+browser.runtime.sendMessage({action: 'get settings'}).then(msg => {
 	let clearSecure;
 	const changePeriod = e => {
 		ui.days.disabled = !ui.xdays.checked;

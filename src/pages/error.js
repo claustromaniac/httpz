@@ -2,7 +2,7 @@
 
 const ui = document.getElementsByTagName('*');
 
-browser.runtime.sendMessage({getUrl: true}).then(msg => {
+browser.runtime.sendMessage({action: 'get tabsData URL'}).then(msg => {
 	if (!msg.url) return;
 	ui.retry.disabled = false;
 	ui.continue.disabled = false;
@@ -12,7 +12,10 @@ browser.runtime.sendMessage({getUrl: true}).then(msg => {
 	ui.continue.onclick = e => {
 		ui.retry.disabled = true;
 		ui.continue.disabled = true;
-		browser.runtime.sendMessage({ignore: url.hostname}).then(() => {
+		browser.runtime.sendMessage({
+			action: 'ignore',
+			host: url.hostname
+		}).then(() => {
 			location.href = msg.url.replace(/^https:/, 'http:');
 		});
 	};

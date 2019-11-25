@@ -8,8 +8,8 @@ const exceptions = new Set([
 const filter = {urls: ["http://*/*"], types: ['main_frame']};
 const processed = new Set();
 const sfilter = {urls: ["https://*/*"], types: ['main_frame']};
-const warningPage = browser.runtime.getURL('pages/error.htm');
-const redirectPage = browser.runtime.getURL('pages/redirect.htm');
+const warningPage = runtime.getURL('pages/error.htm');
+const redirectPage = runtime.getURL('pages/redirect.htm');
 const webReq = browser.webRequest;
 
 /** ---------- Functions ---------- **/
@@ -158,6 +158,7 @@ webReq.onResponseStarted.addListener(d => {
 webReq.onCompleted.addListener(d => {
 	const url = new URL(d.url);
 	if (processed.has(url.hostname)) {
+		if (tabsData[d.tabId].timerID) clearTimeout(tabsData[d.tabId].timerID);
 		if (
 			sAPI.proxyCompat &&
 			(d.statusCode === 502 || d.statusCode === 504)
@@ -165,7 +166,6 @@ webReq.onCompleted.addListener(d => {
 			console.info(`HTTPZ: status code ${d.statusCode} (Proxy-Compatible Mode)`);
 			return downgrade(url, d);
 		}
-		if (tabsData[d.tabId].timerID) clearTimeout(tabsData[d.tabId].timerID);
 	}
 	if (sAPI.rememberSecureSites) remember(url.hostname, d.tabId);
 }, sfilter);
