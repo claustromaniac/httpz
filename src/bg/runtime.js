@@ -28,6 +28,10 @@ browser.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 			return true;
 		} else if (msg.tabLoaded) { // cs.js
 			if (tabsData[sender.tab.id]) delete tabsData[sender.tab.id].loading;
+			if (
+				processed.has(msg.tabHost) || 
+				isWhitelisted(msg.tabHost)
+			) pageAction.show(sender.tab.id);
 		}
 	})();
 });

@@ -1,4 +1,7 @@
 (() => {
 	'use strict';
-	browser.runtime.sendMessage({tabLoaded: true});
+	browser.runtime.sendMessage({
+		tabHost: location.host,
+		tabLoaded: true
+	});
 })();

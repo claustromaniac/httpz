@@ -165,16 +165,10 @@ webReq.onCompleted.addListener(d => {
 			console.info(`HTTPZ: status code ${d.statusCode} (Proxy-Compatible Mode)`);
 			return downgrade(url, d);
 		}
-		if (!isWhitelisted(url.hostname)) pageAction.show(d.tabId);
 		if (tabsData[d.tabId].timerID) clearTimeout(tabsData[d.tabId].timerID);
 	}
 	if (sAPI.rememberSecureSites) remember(url.hostname, d.tabId);
 }, sfilter);
-
-webReq.onCompleted.addListener(d => {
-	const url = new URL(d.url);
-	if (isWhitelisted(url.hostname)) pageAction.show(d.tabId);
-}, filter);
 
 webReq.onErrorOccurred.addListener(d => {
 	console.info(`HTTPZ: ${d.error}`, d);
