@@ -33,6 +33,7 @@ const local = browser.storage.local;
 const pageAction = browser.pageAction;
 const runtime = browser.runtime;
 const tabs = browser.tabs;
+const processed = new Set();
 //FF56 compatibility
 tabs._update = tabs.update;	
 tabs.update = async function (id, p) { 

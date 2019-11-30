@@ -1,29 +1,22 @@
-* {
-	box-sizing: border-box;
-	text-align: center;
-}
+* {text-align: center !important;}
 body {
-	background: #444;
-	color: #FFF;
-	font-family: "Consolas";
-	font-size: 1.5vw;
+	font-size: 1.3em;
 	font-weight: 100;
 }
-button {
-	background: #FFF;
-	border-radius: 0.3em;
-	color: #000;
-	font-size: 1.5vw;
-	margin-top: 1em;
-	padding: 0 0.75em;
-}
+button {margin: 2em auto;}
 div {
-	margin: 15% auto 0;
+	margin: 10% auto 0;
 	width: 75%;
 }
-code {color: #6CF;}
-img {
-	margin: auto;
-	width: 5em;
-	display: block;
+abbr {color: #FFA;}
+code {
+	background: #474749;
+	border-radius: 4px;
+	padding: 0.1em 1em;
 }
+img {
+	display: block;
+	margin: 1em auto;
+	width: 5em;
+}
+#error {width: 100%;}

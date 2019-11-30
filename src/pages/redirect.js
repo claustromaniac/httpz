@@ -7,7 +7,7 @@ browser.runtime.sendMessage({action: 'get tabsData URL'}).then(msg => {
 	ui.continue.disabled = false;
 	const url = new URL(msg.url);
 	ui.host.textContent = url.hostname;
-	ui.abbr.title = msg.url;
+	ui.host.setAttribute('data-info', msg.url);
 	ui.continue.onclick = e => {
 		ui.continue.disabled = true;
 		url.protocol = 'http:';

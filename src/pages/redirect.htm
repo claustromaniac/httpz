@@ -2,14 +2,15 @@
 <html>
 	<head>
 		<meta charset="utf-8">
+		<link href="chrome://browser/content/extension.css" rel="stylesheet">
+		<link href="httpz.css" rel="stylesheet">
 		<link href="error.css" rel="stylesheet">
 	</head>
 	<body>
 		<div>
 			<img src="../assets/httpz.svg"><img>
-			<p>The server at <abbr id="abbr" title=""><code id="host">(loading...)</code></abbr> tried to redirect the request to HTTP
-			<br>
-			<button id="continue" disabled>Proceed with redirection</button>
+			<p>The server at <code id="host" data-info="">(loading...)</code> tried to redirect the request to HTTP</p>
+			<button id="continue" type="button" class="browser-style" disabled>Proceed with redirection</button>
 		</div>
 		<script src="redirect.js"></script>
 	</body>

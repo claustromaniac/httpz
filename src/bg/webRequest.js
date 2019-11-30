@@ -6,7 +6,6 @@ const exceptions = new Set([
 	'NS_ERROR_UNKNOWN_HOST'
 ]);
 const filter = {urls: ["http://*/*"], types: ['main_frame']};
-const processed = new Set();
 const sfilter = {urls: ["https://*/*"], types: ['main_frame']};
 const warningPage = runtime.getURL('pages/error.htm');
 const redirectPage = runtime.getURL('pages/redirect.htm');
@@ -175,6 +174,7 @@ webReq.onErrorOccurred.addListener(d => {
 	const url = new URL(d.url);
 	if (processed.has(url.hostname)) {
 		if (tabsData[d.tabId]) {
+			tabsData[d.tabId].error = d.error;
 			delete tabsData[d.tabId].loading;
 			if (tabsData[d.tabId].timerID) clearTimeout(tabsData[d.tabId].timerID);
 		}

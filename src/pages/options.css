@@ -1,42 +1,36 @@
-* {
-	box-sizing: border-box;
-	margin: 0;
+* {margin: 0;}
+body {
+	min-height: 40em;
+	padding: 1em;
+	width: 95vw;
 }
-.fb {
-	align-items: center;
-	display: flex;
-	flex-flow: row wrap;
-}
-.fb > * {margin: auto inherit;}
-.fill {
-	flex-grow: 10;
-	min-height: 1em;
-	min-width: 1em;
-}
-.inlb {display: inline-block;}
-.num {width: 3.5em;}
-.red {color: red;}
-code, fieldset, textarea {border-radius: 5px;}
-body > * {
-	margin: 0.5em auto;
-	width: 90vw;
-}
-fieldset > div {padding: 1em 1em;}
-fieldset > div > * {margin-top: 1em;}
-button {
-	min-width: 6em;
-	padding: 0 0.75em;
-	text-align: center;
-}
-button.wide {min-width: 10em;}
-button+button, input+* {margin-left: 1em;}
+hr {margin: 1em 0;}
+input[type="file"] {display: none;}
+input[type="radio"] {margin-left: 1em;}
+input[type="text"] {text-align-last: center !important;}
 textarea {
-	font-family: "Consolas";
 	font-weight: 100;
+	resize: none;
+	width: 75%;
+}
+.flex {display: flex;}
+.col {flex-flow: column nowrap;}
+.row {flex-flow: row nowrap;}
+.align-center {align-items: center;}
+.align-top {align-items: top;}
+.justify-end {justify-content: end;}
+.justify-space-around {justify-content: space-around;}
+.num {width: 3.5em;}
+#main {
+	border-radius: 5px;
+	padding: 1em;
+	width: 80%;
+}
+#sidebar {width: 20%;}
+#sidebar button {
+	margin: 0.2em 0;
 	width: 100%;
 }
-input[type="file"] {display: none;}
-input[type="text"] {text-align-last: center !important;}
-#clearIgnored {align-self: flex-end;}
-#clearWhitelist {margin-top: 1em;}
+#sidebar button:disabled {border: none;}
+#i_days {margin: 0 1em;}
 #save {font-weight: 700;}

@@ -1,0 +1,40 @@
+* {box-sizing: border-box;}
+body {
+	background: #323234;
+	color: #FFF;
+}
+button[type="button"] {
+	min-width: 10em;
+	text-align: center;
+}
+button, input, textarea {filter: invert(100%) hue-rotate(180deg);}
+x-fill {
+	flex-grow: 10;
+	min-height: 1em;
+	min-width: 1em;
+}
+.info {
+	background: #FFC;
+	border-radius: 4px;
+	color: #000;
+	cursor: help;
+	font-weight: 700;
+	margin-left: 1em;
+	padding: 0.1em 0.5em;
+}
+[data-info]:hover::after,
+[data-info]:focus::after {
+	background: #474749;
+	border-radius: 8px;
+	color: #FFF;
+	content: attr(data-info);
+	display: block;
+	font-weight: 100;
+	padding: 1em;
+	position: absolute;
+	text-shadow: 1px 1px black;
+	text-align: inherit;
+	white-space: pre-line;
+	width: 20em;
+	z-index: 9;
+}

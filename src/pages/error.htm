@@ -2,16 +2,19 @@
 <html>
 	<head>
 		<meta charset="utf-8">
+		<link href="chrome://browser/content/extension.css" rel="stylesheet">
+		<link href="httpz.css" rel="stylesheet">
 		<link href="error.css" rel="stylesheet">
 	</head>
 	<body>
 		<div>
 			<img src="../assets/httpz.svg"><img>
-			<p>HTTPZ tried to load <abbr id="abbr" title=""><code id="hostname">(loading...)</code></abbr> over HTTPS, but this resulted in an error.</p>
+			<p>HTTPZ tried to load <code id="host" tabindex="0" data-info="">(loading...)</code> over HTTPS, but failed. This is the error code returned by the browser:</p>
+			<input id="error" class="browser-style" type="text" readonly></input>
 			<p>Errors are expected when servers do not support the protocol, or when there are network issues, but they could also mean that an intermediary is trying to exploit this extension to perform a Man-in-the-Middle attack against you.</p>
 			<p>Proceed at your own discretion.</p>
-			<button id="retry" disabled>Retry</button>
-			<button id="continue" disabled>Proceed over HTTP</button>
+			<button id="retry" type="button" class="browser-style" disabled>Retry</button>
+			<button id="continue" type="button" class="browser-style" disabled>Proceed over HTTP</button>
 		</div>
 		<script src="error.js"></script>
 	</body>
