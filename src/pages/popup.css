@@ -1,14 +1,13 @@
-* {
-	box-sizing: border-box;
-	text-align: center;
-}
+* {text-align: center;}
 body {
-	display: table;
 	padding: 2em;
 	width: 30em;
 }
-p { font-weight: 100; }
-button { margin-left: 0.25em; }
+button {
+	margin: auto;
+	width: 15em;
+}
+p {font-weight: 100;}
 #incognito {
 	font-size: 1.1em;
 	font-weight: 700;
