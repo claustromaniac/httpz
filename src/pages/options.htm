@@ -5,7 +5,7 @@
 		<link href="httpz.css" rel="stylesheet">
 		<link href="options.css" rel="stylesheet">
 	</head>
-	<body class="panel-section align-top">
+	<body class="panel-section">
 		<div id="main">
 			<div id="d_general">
 				<div class="browser-style panel-section align-center">
@@ -56,7 +56,7 @@
 					Whitelist
 					<span class="info" tabindex="0" data-info="Whitelisted sites are ignored unconditionally
 					
-					This list accepts hostnames only (www.example.com)">i</span>
+					This list accepts hostnames only (e.g. www.example.com)">i</span>
 					<x-fill></x-fill>
 					<textarea autocomplete="off" class="browser-style" id="t_whitelist" rows="1" spellcheck="false"></textarea>
 				</div>
@@ -69,9 +69,9 @@
 			<div id="d_advanced" hidden>
 				<div class="browser-style panel-section align-center">
 					Intercept server-initiated redirections to HTTP
-					<span class="info" tabindex="0" data-info="Enabled: HTTPZ will block server-initiated downgrade attempts and show you a warning, allowing you to decide what to do
+					<span class="info" tabindex="0" data-info="Enabled: HTTPZ will block any server-initiated downgrade attempt and display a warning page, allowing you to decide what to do
 					
-					Disabled (default): HTTPZ will add those sites to the ignore list and let the browser proceed with the redirection
+					Disabled (default): HTTPZ will add the site to the ignore list and let the browser proceed with the redirection
 					
 					💡 Note that a secure communication with a server needs to be established first for it to be able to ask the browser to downgrade this way">i</span>
 					<x-fill></x-fill>

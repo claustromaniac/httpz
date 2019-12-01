@@ -17,7 +17,6 @@ textarea {
 .col {flex-flow: column nowrap;}
 .row {flex-flow: row nowrap;}
 .align-center {align-items: center;}
-.align-top {align-items: top;}
 .justify-end {justify-content: end;}
 .justify-space-around {justify-content: space-around;}
 .num {width: 3.5em;}
