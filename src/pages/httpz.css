@@ -13,6 +13,7 @@ x-fill {
 	min-height: 1em;
 	min-width: 1em;
 }
+input[type="checkbox"] {display: inline;}	/* FF56 compatibility */
 .info {
 	background: #FFC;
 	border-radius: 4px;
