@@ -9,6 +9,24 @@ const ui_initialStates = {};
 const ui_changes = {};
 let reader;
 
+function showDialog(text, ask = false) {
+	return new Promise(resolve => {
+		ui.p_modal.textContent = text;
+		ui.modalDialog.style.display = 'flex';
+		ui.b_modal_ok.onclick = e => {
+			ui.modalDialog.style.display = 'none';
+			resolve(true);
+		};
+		if (ask) {
+			ui.b_modal_cancel.style.display = 'inline';
+			ui.b_modal_cancel.onclick = e => {
+				ui.modalDialog.style.display = 'none';
+				resolve(false);
+			};
+		} else ui.b_modal_cancel.style.display = 'none';
+	});
+}
+
 function isChanged(p) {
 	return ui_changes.hasOwnProperty(p);
 }
@@ -118,6 +136,7 @@ runtime.sendMessage({action: 'get settings'}).then(msg => {
 	const checkedChangeHandler = makeHandler('checked');
 	const valueChangeHandler = makeHandler('value');
 	const maybeAddLabel = ele => {
+		// mostly for compatibility with FF56
 		if (getComputedStyle(ele, null).display === 'none') {
 			const label = document.createElement('label');
 			label.setAttribute('for', ele.id);
@@ -149,13 +168,17 @@ ui.i_xdays.addEventListener('change', handlePeriodChange);
 ui.i_permanent.addEventListener('change', handlePeriodChange);
 ui.i_rememberSecureSites.addEventListener('change', e => {
 	if (!e.target.checked) {
-		if (confirm('Do you also want to clear the list of secure sites?\n\n(Click \'Cancel\' if you plan to re-enable this feature later on)')) ui_changes.clearSecure = true;
-		else delete ui_changes.clearSecure;
-		updateSaveButton();
+		showDialog('Do you also want to clear the list of secure sites?\n\n(Click \'Cancel\' if you plan to re-enable this feature later on)', true).then(r => {
+			r ? 
+			ui_changes.clearSecure = true :
+			delete ui_changes.clearSecure;
+			updateSaveButton();
+		});
 	}
 });
 ui.b_clearIgnored.addEventListener('click', e => {
-	if (confirm('Are you sure you want to clear the ignore list?')) {
+	showDialog('Are you sure you want to clear the ignore list?', true).then(r => {
+		if (!r) return;
 		local.set({ignored: {}}).then(() => {
 			setStatus(ui.b_clearIgnored, true);
 		});
@@ -163,7 +186,7 @@ ui.b_clearIgnored.addEventListener('click', e => {
 			action: 'update sAPI',
 			data: {ignored_pb: {}}
 		});
-	}
+	});
 });
 ui.b_fakeFileInput.addEventListener('click', e => {
 	ui.i_import.click();
@@ -182,7 +205,7 @@ ui.i_import.addEventListener('change', e => {
 				} else throw 'error';
 			} catch (ex) {
 				setStatus(ui.b_fakeFileInput, false);
-				alert('The file seems to be invalid');
+				showDialog('The file seems to be invalid');
 			};
 		};
 	}
@@ -190,7 +213,8 @@ ui.i_import.addEventListener('change', e => {
 	reader.readAsText(ui.i_import.files[0]);
 });
 ui.b_clearWhitelist.addEventListener('click', e => {
-	if (confirm('Are you sure you want to clear the whitelist?')) {
+	showDialog('Are you sure you want to clear the whitelist?', true).then(r => {
+		if (!r) return;
 		local.set({whitelist: {}, incognitoWhitelist: {}}).then(() => {
 			ui.t_whitelist.value = '';
 			ui_initialStates.t_whitelist = '';
@@ -199,7 +223,7 @@ ui.b_clearWhitelist.addEventListener('click', e => {
 			updateSaveButton();
 			setStatus(ui.b_clearWhitelist, true);
 		});
-	}
+	});
 });
 ui.b_save.addEventListener('click', e => {
 	ui.b_save.disabled = true;

@@ -32,3 +32,25 @@ textarea {
 #sidebar button:disabled {border: none;}
 #i_days {margin: 0 1em;}
 #save {font-weight: 700;}
+#modalDialog {
+	background: rgba(255,255,255,0.2);
+	bottom: 0;
+	display: none;
+	left: 0;
+	position: fixed;
+	right: 0;
+	top: 0;
+	z-index: 99999;
+}
+#modalDialog > div {
+	background: #323234;
+	border-radius: 8px;
+	margin: auto;
+	max-width: 40vw;
+	padding: 2em;
+}
+#modalDialog > div > div {width: 100%;}
+#modalDialog > div > p {
+	text-align: center;
+	white-space: pre-line;
+}
