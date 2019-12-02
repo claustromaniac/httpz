@@ -96,42 +96,45 @@ runtime.sendMessage({action: 'get settings'}).then(msg => {
 	refreshUI(msg);
 	recordUIstate();
 });
-const changeTab = e => {
-	const ele = e.target;	
-	ui.d_general.hidden = !(ele.id === 'b_general');
-	ui.b_general.disabled = ele.id === 'b_general';
-	ui.d_advanced.hidden = !(ele.id === 'b_advanced');
-	ui.b_advanced.disabled = ele.id === 'b_advanced';
-};
-ui.b_general.addEventListener('click', changeTab);
-ui.b_advanced.addEventListener('click', changeTab);
+(async () => {
+	const changeTab = e => {
+		const ele = e.target;	
+		ui.d_general.hidden = !(ele.id === 'b_general');
+		ui.b_general.disabled = ele.id === 'b_general';
+		ui.d_advanced.hidden = !(ele.id === 'b_advanced');
+		ui.b_advanced.disabled = ele.id === 'b_advanced';
+	};
+	ui.b_general.addEventListener('click', changeTab);
+	ui.b_advanced.addEventListener('click', changeTab);
 
-const makeHandler = attr => e => {
-	const ele = e.target;
-	const p = ele.name || ele.id;
-	if (ui_initialStates[p] === ele[attr])
-		delete ui_changes[p];
-	else ui_changes[p] = ele[attr];
-	updateSaveButton();
-};
-const checkedChangeHandler = makeHandler('checked');
-const valueChangeHandler = makeHandler('value');
-const maybeAddLabel = ele => {
-	if (getComputedStyle(ele, null).display === 'none') {
-		const label = document.createElement('label');
-		label.setAttribute('for', ele.id);
-		ele.parentNode.insertBefore(label, ele.nextSibling);
+	const makeHandler = attr => e => {
+		const ele = e.target;
+		const p = ele.name || ele.id;
+		if (ui_initialStates[p] === ele[attr])
+			delete ui_changes[p];
+		else ui_changes[p] = ele[attr];
+		updateSaveButton();
+	};
+	const checkedChangeHandler = makeHandler('checked');
+	const valueChangeHandler = makeHandler('value');
+	const maybeAddLabel = ele => {
+		if (getComputedStyle(ele, null).display === 'none') {
+			const label = document.createElement('label');
+			label.setAttribute('for', ele.id);
+			ele.parentNode.insertBefore(label, ele.nextSibling);
+		}
+	};
+	for (const ele of ui) {
+		if (ele.type === 'checkbox') {
+			ele.addEventListener('change', checkedChangeHandler);
+			maybeAddLabel(ele);
+		} else if (ele.type === 'radio') {
+			ele.addEventListener('change', valueChangeHandler);
+			maybeAddLabel(ele);
+		} else if (ele.type && ele.type.startsWith('text'))
+			ele.addEventListener('change', valueChangeHandler);
 	}
-};
-for (const ele of ui) {
-	if (ele.type === 'checkbox') {
-		ele.addEventListener('change', checkedChangeHandler);
-		maybeAddLabel(ele);
-	} else if (ele.type === 'radio' || ele.type && ele.type.startsWith('text')) {
-		ele.addEventListener('change', valueChangeHandler);
-		maybeAddLabel(ele);
-	}
-}
+})();
 const handlePeriodChange = e => {
 	ui.i_days.disabled = !ui.i_xdays.checked;
 	if (!ui.i_days.value) ui.i_days.value = 7;
