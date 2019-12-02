@@ -116,11 +116,20 @@ const makeHandler = attr => e => {
 };
 const checkedChangeHandler = makeHandler('checked');
 const valueChangeHandler = makeHandler('value');
+const maybeAddLabel = ele => {
+	if (getComputedStyle(ele, null).display === 'none') {
+		const label = document.createElement('label');
+		label.setAttribute('for', ele.id);
+		ele.parentNode.insertBefore(label, ele.nextSibling);
+	}
+};
 for (const ele of ui) {
 	if (ele.type === 'checkbox') {
 		ele.addEventListener('change', checkedChangeHandler);
+		maybeAddLabel(ele);
 	} else if (ele.type === 'radio' || ele.type && ele.type.startsWith('text')) {
 		ele.addEventListener('change', valueChangeHandler);
+		maybeAddLabel(ele);
 	}
 }
 const handlePeriodChange = e => {

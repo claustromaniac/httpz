@@ -8,12 +8,13 @@ button[type="button"] {
 	text-align: center;
 }
 button, input, textarea {filter: invert(100%) hue-rotate(180deg);}
+input[type="checkbox"],
+input[type="radio"] {margin-right: 0 !important;}
 x-fill {
 	flex-grow: 10;
 	min-height: 1em;
 	min-width: 1em;
 }
-input[type="checkbox"] {display: inline;}	/* FF56 compatibility */
 .info {
 	background: #FFC;
 	border-radius: 4px;

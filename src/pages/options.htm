@@ -2,15 +2,15 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<link href="chrome://browser/content/extension.css" rel="stylesheet"> 
+		<link href="chrome://browser/content/extension.css" rel="stylesheet">
 			<!-- healthy redundancy in case the page is opened directly -->	
 		<link href="httpz.css" rel="stylesheet">
 		<link href="options.css" rel="stylesheet">
 	</head>
-	<body class="panel-section">
+	<body class="flex row">
 		<div id="main">
 			<div id="d_general">
-				<div class="browser-style panel-section align-center">
+				<div class="browser-style flex row align-center">
 					Enable Silent Fallback
 					<span class="info" tabindex="0" data-info="HTTPZ's behavior whenever it fails to establish a secure communication with a server
 					
@@ -21,31 +21,31 @@
 					<input id="i_autoDowngrade" type="checkbox">
 				</div>
 				<hr>
-				<div class="browser-style panel-section align-center">
+				<div class="browser-style flex row align-center">
 					Ignore insecure sites...
 					<span class="info" tabindex="0" data-info="After determining that a given site does not support HTTPS, HTTPZ will ignore subsequent requests to it for a certain period of time">i</span>
 					<x-fill></x-fill>
 					<div>
-						<div class="browser-style panel-section align-center justify-end">
+						<div class="browser-style flex row align-center justify-end">
 							<label for="i_session">Until Firefox is restarted</label>
 							<input id="i_session" name="period" type="radio" value=0>
 						</div>
-						<div class="browser-style panel-section align-center justify-end">
+						<div class="browser-style flex row align-center justify-end">
 							<label for="i_xdays">For</label>
 							<div class="browser-style">
-								<input id="i_days" type="text" class="browser-style num" pattern="^0*[1-9]\d*$" required>
+								<input id="i_days" type="text" class="browser-style num" pattern="^0*[1-9]\d*$" required><label></label>
 							</div>
 							<label for="i_xdays">day(s)</label>
 							<input id="i_xdays" name="period" type="radio" value=1>
 						</div>
-						<div class="browser-style panel-section align-center justify-end">
+						<div class="browser-style flex row align-center justify-end">
 							<label for="i_permanent">Permanently</label>
 							<input id="i_permanent" name="period" type="radio" value=-1>
 						</div>
 					</div>
 				</div>
 				<hr>
-				<div class="browser-style panel-section align-center">
+				<div class="browser-style flex row align-center">
 					Maximum wait time before fallback (seconds)
 					<span class="info" tabindex="0" data-info="The initial request to some sites that do not support HTTPS can take long to time out. HTTPZ will never wait longer than the time specified here before retrying requests over HTTP
 					
@@ -54,7 +54,7 @@
 					<input id="i_maxWait" type="text" class="browser-style num" pattern="^\d+$" required>
 				</div>
 				<hr>
-				<div class="panel-section align-center">
+				<div class="flex row align-center">
 					Whitelist
 					<span class="info" tabindex="0" data-info="Whitelisted sites are ignored unconditionally
 					
@@ -63,15 +63,15 @@
 					<textarea autocomplete="off" class="browser-style" id="t_whitelist" rows="1" spellcheck="false"></textarea>
 				</div>
 				<hr>
-				<div class="panel-section justify-space-around">
+				<div class="flex row justify-space-around">
 					<button class="browser-style" type="button" id="b_clearIgnored">Clear Ignore List</button>
 					<button class="browser-style wide" type="button" id="b_clearWhitelist">Clear Whitelist</button>
 				</div>
 			</div>
 			<div id="d_advanced" hidden>
-				<div class="browser-style panel-section align-center">
+				<div class="browser-style flex row align-center">
 					Intercept server-initiated redirections to HTTP
-					<span class="info" tabindex="0" data-info="Enabled: HTTPZ will block any server-initiated downgrade attempt and display a warning page, allowing you to decide what to do
+					<span class="info" tabindex="0" data-info="Enabled: HTTPZ will block any server-initiated downgrade attempts and display a warning page, allowing you to decide what to do
 					
 					Disabled (default): HTTPZ will add the site to the ignore list and let the browser proceed with the redirection
 					
@@ -80,14 +80,14 @@
 					<input id="i_interceptRedirects" type="checkbox">
 				</div>
 				<hr>
-				<div class="browser-style panel-section align-center">
+				<div class="browser-style flex row align-center">
 					Handle non-standard redirections to HTTP
 					<span class="info" tabindex="0" data-info="This fixes rare redirection loops, but is not a perfect solution. Disable if HTTPS is a strict requirement to you, but note that a few sites will get stuck reloading endlessly in a loop">i</span>
 					<x-fill></x-fill>
 					<input id="i_NSRedirectionsFix" type="checkbox">
 				</div>
 				<hr>
-				<div class="browser-style panel-section align-center">
+				<div class="browser-style flex row align-center">
 					Enable Proxy-Compatible Mode
 					<span class="info" tabindex="0" data-info="Enable this if you connect through a forward proxy or gateway and HTTPZ causes it to respond with status codes 502 and/or 504 frequently
 					
@@ -96,7 +96,7 @@
 					<input id="i_proxyCompat" type="checkbox">
 				</div>
 				<hr>
-				<div class="browser-style panel-section align-center">
+				<div class="browser-style flex row align-center">
 					Honor private browsing
 					<span class="info" tabindex="0" data-info="Enabled (default): potentially compromising information required by some features is not stored in the hard drive whenever it comes from a Private Browsing window. Such information is stored only in RAM instead. This includes:
 					
@@ -108,7 +108,7 @@
 					<input id="i_honorPB" type="checkbox">
 				</div>
 				<hr>
-				<div class="browser-style panel-section align-center">
+				<div class="browser-style flex row align-center">
 					Remember secure sites
 					<span class="info" tabindex="0" data-info="Every time that you navigate to a site that loads successfully over HTTPS, HTTPZ remembers its hostname, so as to avoid redirecting it back to HTTP if it ever fails in the future. This minimizes the risk of a Man-in-the-Middle being able to exploit the extension's behavior
 					
