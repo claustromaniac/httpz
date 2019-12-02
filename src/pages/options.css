@@ -7,7 +7,6 @@ body {
 hr {margin: 1em 0;}
 input[type="file"] {display: none;}
 input[type="radio"] {margin-left: 1em;}
-input[type="text"] {text-align-last: center !important;}
 textarea {
 	font-weight: 100;
 	resize: none;

@@ -10,6 +10,7 @@ button[type="button"] {
 button, input, textarea {filter: invert(100%) hue-rotate(180deg);}
 input[type="checkbox"],
 input[type="radio"] {margin-right: 0 !important;}
+input[type="text"] {text-align-last: center !important;}
 x-fill {
 	flex-grow: 10;
 	min-height: 1em;
