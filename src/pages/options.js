@@ -177,7 +177,7 @@ ui.i_rememberSecureSites.addEventListener('change', e => {
 	}
 });
 ui.b_clearIgnored.addEventListener('click', e => {
-	showDialog('Are you sure you want to clear the ignore list?', true).then(r => {
+	showDialog('Clear the list of insecure sites?', true).then(r => {
 		if (!r) return;
 		local.set({ignored: {}}).then(() => {
 			setStatus(ui.b_clearIgnored, true);
@@ -213,7 +213,7 @@ ui.i_import.addEventListener('change', e => {
 	reader.readAsText(ui.i_import.files[0]);
 });
 ui.b_clearWhitelist.addEventListener('click', e => {
-	showDialog('Are you sure you want to clear the whitelist?', true).then(r => {
+	showDialog('Clear the list of exclusions?', true).then(r => {
 		if (!r) return;
 		local.set({whitelist: {}, incognitoWhitelist: {}}).then(() => {
 			ui.t_whitelist.value = '';

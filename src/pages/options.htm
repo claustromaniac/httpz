@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<link href="chrome://browser/content/extension.css" rel="stylesheet">
-			<!-- healthy redundancy in case the page is opened directly -->	
+			<!-- healthy redundancy in case the page is opened directly -->
 		<link href="httpz.css" rel="stylesheet">
 		<link href="options.css" rel="stylesheet">
 	</head>
@@ -11,19 +11,34 @@
 		<div id="main">
 			<div id="d_general">
 				<div class="browser-style flex row align-center">
-					Enable Silent Fallback
+					Fall back to HTTP without warning
 					<span class="info" tabindex="0" data-info="HTTPZ's behavior whenever it fails to establish a secure communication with a server
-					
+
 					Enabled (default): will try an insecure communication (over HTTP) automatically
-					
+
 					Disabled: will show you a warning page asking you how to proceed">i</span>
 					<x-fill></x-fill>
 					<input id="i_autoDowngrade" type="checkbox">
 				</div>
 				<hr>
 				<div class="browser-style flex row align-center">
-					Ignore insecure sites...
-					<span class="info" tabindex="0" data-info="After determining that a given site does not support HTTPS, HTTPZ will ignore subsequent requests to it for a certain period of time">i</span>
+					Maximum wait before fallback (seconds)
+					<span class="info" tabindex="0" data-info="The initial request to some sites that do not support HTTPS can take long to time out. HTTPZ will never wait longer than the time specified here before retrying requests over HTTP
+
+					Set to 0 to wait until the browser gives up (default)">i</span>
+					<x-fill></x-fill>
+					<input id="i_maxWait" type="text" class="browser-style num" pattern="^\d+$" required>
+				</div>
+				<hr>
+				<div class="browser-style flex row">
+					<div class="flex col">
+						<div class="flex row align-center">
+							Remember insecure sites...
+							<span class="info" tabindex="0" data-info="After determining that a given site does not support HTTPS, HTTPZ will remember its hostname for a certain period of time in order to avoid making superfluous attempts over HTTPS">i</span>
+						</div>
+						<x-fill></x-fill>
+						<button class="browser-style" type="button" id="b_clearIgnored">🗑️</button>
+					</div>
 					<x-fill></x-fill>
 					<div>
 						<div class="browser-style flex row align-center justify-end">
@@ -33,48 +48,36 @@
 						<div class="browser-style flex row align-center justify-end">
 							<label for="i_xdays">For</label>
 							<div class="browser-style">
-								<input id="i_days" type="text" class="browser-style num" pattern="^0*[1-9]\d*$" required><label></label>
+								<input id="i_days" type="text" class="browser-style num" pattern="^0*[1-9]\d*$" required>
 							</div>
 							<label for="i_xdays">day(s)</label>
 							<input id="i_xdays" name="period" type="radio" value=1>
 						</div>
 						<div class="browser-style flex row align-center justify-end">
-							<label for="i_permanent">Permanently</label>
+							<label for="i_permanent">Indefinitely</label>
 							<input id="i_permanent" name="period" type="radio" value=-1>
 						</div>
 					</div>
 				</div>
 				<hr>
-				<div class="browser-style flex row align-center">
-					Maximum wait before fallback (seconds)
-					<span class="info" tabindex="0" data-info="The initial request to some sites that do not support HTTPS can take long to time out. HTTPZ will never wait longer than the time specified here before retrying requests over HTTP
-					
-					Set to 0 to wait until the browser gives up (default)">i</span>
-					<x-fill></x-fill>
-					<input id="i_maxWait" type="text" class="browser-style num" pattern="^\d+$" required>
-				</div>
-				<hr>
 				<div class="flex row align-center">
-					Whitelist
-					<span class="info" tabindex="0" data-info="Whitelisted sites are ignored unconditionally
-					
-					This list accepts hostnames only (e.g. www.example.com)">i</span>
+					Exclusions
+					<span class="info" tabindex="0" data-info="HTTPZ will never attempt to use HTTPS for sites in this list
+
+					Only hostnames are accepted (e.g. www.example.com)">i</span>
 					<x-fill></x-fill>
 					<textarea autocomplete="off" class="browser-style" id="t_whitelist" rows="1" spellcheck="false"></textarea>
-				</div>
-				<hr>
-				<div class="flex row justify-space-around">
-					<button class="browser-style" type="button" id="b_clearIgnored">Clear Ignore List</button>
-					<button class="browser-style wide" type="button" id="b_clearWhitelist">Clear Whitelist</button>
+					<x-fill></x-fill>
+					<button class="browser-style wide" type="button" id="b_clearWhitelist">🗑️</button>
 				</div>
 			</div>
 			<div id="d_advanced" hidden>
 				<div class="browser-style flex row align-center">
 					Intercept server-initiated redirections to HTTP
 					<span class="info" tabindex="0" data-info="Enabled: HTTPZ will block any server-initiated downgrade attempts and display a warning page, allowing you to decide what to do
-					
+
 					Disabled (default): HTTPZ will add the site to the ignore list and let the browser proceed with the redirection
-					
+
 					💡 Note that a secure communication with a server needs to be established first for it to be able to ask the browser to downgrade this way">i</span>
 					<x-fill></x-fill>
 					<input id="i_interceptRedirects" type="checkbox">
@@ -88,9 +91,9 @@
 				</div>
 				<hr>
 				<div class="browser-style flex row align-center">
-					Enable Proxy-Compatible Mode
+					Make compatible with proxies
 					<span class="info" tabindex="0" data-info="Enable this if you connect through a forward proxy or gateway and HTTPZ causes it to respond with status codes 502 and/or 504 frequently
-					
+
 					HTTPZ will start treating those as errors and act accordingly">i</span>
 					<x-fill></x-fill>
 					<input id="i_proxyCompat" type="checkbox">
@@ -99,10 +102,10 @@
 				<div class="browser-style flex row align-center">
 					Honor private browsing
 					<span class="info" tabindex="0" data-info="Enabled (default): potentially compromising information required by some features is not stored in the hard drive whenever it comes from a Private Browsing window. Such information is stored only in RAM instead. This includes:
-					
+
 						- ignored sites
 						- known secure sites (see below)
-					
+
 					Disabled: data coming from Private Browsing windows is not given any special treatment">i</span>
 					<x-fill></x-fill>
 					<input id="i_honorPB" type="checkbox">
@@ -111,12 +114,12 @@
 				<div class="browser-style flex row align-center">
 					Remember secure sites
 					<span class="info" tabindex="0" data-info="Every time that you navigate to a site that loads successfully over HTTPS, HTTPZ remembers its hostname, so as to avoid redirecting it back to HTTP if it ever fails in the future. This minimizes the risk of a Man-in-the-Middle being able to exploit the extension's behavior
-					
+
 					⚠️ Note that this information is stored unencrypted in HTTPZ's own local database in your hard drive. You may want to disable this if your threat model calls for it">i</span>
 					<x-fill></x-fill>
 					<input id="i_rememberSecureSites" type="checkbox">
 				</div>
-			</div>			
+			</div>
 		</div>
 		<div id="sidebar">
 			<br><button class="browser-style" type="button" id="b_general" disabled>General</button><br>

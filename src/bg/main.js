@@ -82,7 +82,7 @@ const sAPI = {
 		'maxWait': 0,
 		'proxyCompat': false,
 		'rememberSecureSites': true,
-		'whitelist': {}
+		'whitelist': {}	// named Exclusions in the UI from 0.11.0 onwards
 	},
 	async getAll() {
 		if (this.loading) await this.loading;

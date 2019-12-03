@@ -12,10 +12,17 @@ input[type="checkbox"],
 input[type="radio"] {margin-right: 0 !important;}
 input[type="text"] {text-align-last: center !important;}
 x-fill {
-	flex-grow: 10;
+	flex: 10;
 	min-height: 1em;
 	min-width: 1em;
 }
+.flex {display: flex;}
+.col {flex-flow: column nowrap;}
+.row {flex-flow: row nowrap;}
+.align-center {align-items: center;}
+.justify-end {justify-content: end;}
+.justify-space-around {justify-content: space-around;}
+.justify-space-between {justify-content: space-between;}
 .info {
 	background: #FFC;
 	border-radius: 4px;

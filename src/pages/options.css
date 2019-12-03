@@ -10,14 +10,8 @@ input[type="radio"] {margin-left: 1em;}
 textarea {
 	font-weight: 100;
 	resize: none;
-	width: 75%;
+	width: 60%;
 }
-.flex {display: flex;}
-.col {flex-flow: column nowrap;}
-.row {flex-flow: row nowrap;}
-.align-center {align-items: center;}
-.justify-end {justify-content: end;}
-.justify-space-around {justify-content: space-around;}
 .num {width: 3.5em;}
 #main {
 	border-radius: 5px;
@@ -32,6 +26,12 @@ textarea {
 #sidebar button:disabled {border: none;}
 #i_days {margin: 0 1em;}
 #save {font-weight: 700;}
+#b_clearIgnored,
+#b_clearWhitelist {
+	margin: 0;
+	min-width: initial;
+	width: 3em;
+}
 #modalDialog {
 	background: rgba(255,255,255,0.2);
 	bottom: 0;
@@ -54,3 +54,4 @@ textarea {
 	text-align: center;
 	white-space: pre-line;
 }
+#modalDialog button {margin: auto 0.5em;}
