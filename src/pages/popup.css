@@ -1,15 +1,20 @@
-* {text-align: center;}
+* {
+	margin: 0 auto;
+	text-align: center;
+}
 body {
 	padding: 2em;
 	width: 30em;
 }
-button {
-	margin: auto;
-	width: 15em;
+button {width: 15em;}
+span {
+	font-weight: 100;
+	margin-bottom: 1em;
+	white-space: pre-line;
 }
-p {font-weight: 100;}
 #incognito {
+	display: none;
 	font-size: 1.1em;
 	font-weight: 700;
-	color: #166;
+	color: #6FF;
 }
