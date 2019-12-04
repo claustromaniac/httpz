@@ -65,7 +65,7 @@ const preventCaching = d => {
 		return h.name.toLowerCase() !== 'cache-control';
 	});
 	newHeaders.push({
-		name: 'Cache-Control', 
+		name: 'Cache-Control',
 		value: 'no-cache, no store, must-revalidate'
 	});
 	return promisify({responseHeaders: newHeaders});
@@ -98,13 +98,13 @@ webReq.onBeforeRequest.addListener(d => {
 		}, sAPI.maxWait*1000);
 		return promisify({
 			redirectUrl: url.toString()
-		}); 
+		});
 	}
 }, filter, ['blocking']);
 
 webReq.onHeadersReceived.addListener(
 	preventCaching,
-	sfilter, 
+	sfilter,
 	['blocking', 'responseHeaders']
 );
 
@@ -119,7 +119,7 @@ webReq.onBeforeRedirect.addListener(d => {
 	if (downgrading && d.url === newTarget.toString()) {
 		if (sAPI.interceptRedirects) {
 			if (
-				!isIgnored(url.hostname) && 
+				!isIgnored(url.hostname) &&
 				!isWhitelisted(url.hostname)
 			) {
 				tabsData[d.tabId].intercepting = url.hostname;

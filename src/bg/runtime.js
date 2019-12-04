@@ -19,7 +19,7 @@ runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
 			msg.incognito
 			? sAPI.incognitoWhitelist[msg.host] = null
 			: sAPI.whitelist[msg.host] = null;
-			return tabs.update(tabId, {loadReplace: true, url: msg.url} );				
+			return tabs.update(tabId, {loadReplace: true, url: msg.url} );
 		case 'remove from whitelist':		// popup.js
 			wlSaver.run();
 			delete sAPI.whitelist[msg.host];
@@ -35,7 +35,7 @@ runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
 			if (tabsData[tabId]) delete tabsData[tabId].loading;
 			await sAPI.loading;
 			if (
-				processed.has(msg.host) && msg.protocol === 'https:' || 
+				processed.has(msg.host) && msg.protocol === 'https:' ||
 				isWhitelisted(msg.host) && msg.protocol === 'http:'
 			) return pageAction.show(tabId);
 	}

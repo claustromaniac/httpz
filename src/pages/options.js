@@ -116,7 +116,7 @@ runtime.sendMessage({action: 'get settings'}).then(msg => {
 });
 (async () => {
 	const changeTab = e => {
-		const ele = e.target;	
+		const ele = e.target;
 		ui.d_general.hidden = !(ele.id === 'b_general');
 		ui.b_general.disabled = ele.id === 'b_general';
 		ui.d_advanced.hidden = !(ele.id === 'b_advanced');
@@ -169,7 +169,7 @@ ui.i_permanent.addEventListener('change', handlePeriodChange);
 ui.i_rememberSecureSites.addEventListener('change', e => {
 	if (!e.target.checked) {
 		showDialog('Do you also want to clear the list of secure sites?\n\n(Click \'Cancel\' if you plan to re-enable this feature later on)', true).then(r => {
-			r ? 
+			r ?
 			ui_changes.clearSecure = true :
 			delete ui_changes.clearSecure;
 			updateSaveButton();
