@@ -3,7 +3,7 @@
 There are numerous similar extensions out there, but HTTPZ is different because it is not smart: it is Zmart. The following summarizes how it works with the default settings:
 - When you are about to navigate to a site over HTTP, that request is aborted and a new one is started over HTTPS. If that new request results in an error, it is automatically redirected back to HTTP. If navigating to the site over HTTP throws an error too, HTTPZ does nothing more then. Otherwise, that host is added to the list of known insecure sites, and all subsequent requests to it are ignored by the extension for seven days.
 - When you navigate to a site over HTTPS by yourself, or because of some external factor (like HSTS preloading), HTTPZ does not do anything to that request, regardless of the outcome.
-- When you navigate to a site over HTTPS and *the server* downgrades the request to HTTP, the extension notices this and allows it. It automatically adds that site to the list of known insecure sites, and does not try to load that site over HTTPS for the next 7 days.
+- When you navigate to a site over HTTPS and *the server* downgrades the request to HTTP, the extension notices this and allows it. It adds that site to the list of known insecure sites, and does not try to load it over HTTPS for the next seven days.
 
 HTTPZ is meant to be unobtrusive and lightweight, it respects your privacy, and is free of trans fats. Additionally, it is very configurable, and should be slightly more secure than some of the alternatives out there, since it has a couple of built-in defenses against SSL-stripping attacks.
 
