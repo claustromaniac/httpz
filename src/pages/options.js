@@ -168,7 +168,7 @@ ui.i_xdays.addEventListener('change', handlePeriodChange);
 ui.i_permanent.addEventListener('change', handlePeriodChange);
 ui.i_rememberSecureSites.addEventListener('change', e => {
 	if (!e.target.checked) {
-		showDialog('Do you also want to clear the list of secure sites?\n\n(Click \'Cancel\' if you plan to re-enable this feature later on)', true).then(r => {
+		showDialog("Do you also want to clear the list of secure sites?\n\n(Click 'Cancel' if you are not sure)", true).then(r => {
 			r ?
 			ui_changes.clearSecure = true :
 			delete ui_changes.clearSecure;

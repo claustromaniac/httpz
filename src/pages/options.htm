@@ -76,7 +76,7 @@
 					Intercept server-initiated redirections to HTTP
 					<span class="info" tabindex="0" data-info="Enabled: HTTPZ will block any server-initiated downgrade attempts and display a warning page, allowing you to decide what to do
 
-					Disabled (default): HTTPZ will add the site to the ignore list and let the browser proceed with the redirection
+					Disabled (default): HTTPZ will add the site to the list of insecure sites and let the browser proceed with the redirection
 
 					💡 Note that a secure communication with a server needs to be established first for it to be able to ask the browser to downgrade this way">i</span>
 					<x-fill></x-fill>
@@ -103,7 +103,7 @@
 					Honor private browsing
 					<span class="info" tabindex="0" data-info="Enabled (default): potentially compromising information required by some features is not stored in the hard drive whenever it comes from a Private Browsing window. Such information is stored only in RAM instead. This includes:
 
-						- ignored sites
+						- known insecure sites
 						- known secure sites (see below)
 
 					Disabled: data coming from Private Browsing windows is not given any special treatment">i</span>
