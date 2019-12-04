@@ -46,7 +46,7 @@ textarea {
 	background: #323234;
 	border-radius: 8px;
 	margin: auto;
-	max-width: 40vw;
+	max-width: 30em;
 	padding: 2em;
 }
 #modalDialog > div > div {width: 100%;}
@@ -54,4 +54,7 @@ textarea {
 	text-align: center;
 	white-space: pre-line;
 }
-#modalDialog button {margin: auto 0.5em;}
+#modalDialog button {
+	margin: auto 0.5em;
+	min-width: 8em;
+}
