@@ -45,6 +45,6 @@ x-fill {
 	text-shadow: 1px 1px black;
 	text-align: inherit;
 	white-space: pre-line;
-	width: 20em;
+	max-width: 20em;
 	z-index: 9;
 }
