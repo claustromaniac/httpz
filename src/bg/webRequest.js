@@ -136,18 +136,6 @@ webReq.onBeforeRedirect.addListener(d => {
 	}
 }, sfilter);
 
-webReq.onBeforeRedirect.addListener(d => {
-/*	prevent showing the page action when something (anything) redirects a whitelisted or
-	ignored request from http to https
-	IMPORTANT: the documentation for this event says it is fired only on server-initiated
-	redirections, but it is wrong. Even this very extension fires this when upgrading */
-	const target = new URL(d.redirectUrl);
-	if (
-		target.protocol === 'https:' &&
-		( isWhitelisted(target.hostname) || isIgnored(target.hostname) )
-	) processed.delete(target.hostname);
-}, filter);
-
 webReq.onResponseStarted.addListener(d => {
 	// required only as part of the mechanism that detects non-standard redirections to http
 	const url = new URL(d.url);

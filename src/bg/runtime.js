@@ -35,8 +35,10 @@ runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
 			if (tabsData[tabId]) delete tabsData[tabId].loading;
 			await sAPI.loading;
 			if (
-				processed.has(msg.host) && msg.protocol === 'https:' ||
+				processed.has(msg.host) && msg.protocol === 'https:' &&
+				!isWhitelisted(msg.host) && !isIgnored(msg.host) ||
 				isWhitelisted(msg.host) && msg.protocol === 'http:'
 			) return pageAction.show(tabId);
+			else return pageAction.hide(tabId);
 	}
 });
