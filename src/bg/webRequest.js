@@ -55,9 +55,7 @@ function downgrade(url, d) {
 	}
 }
 
-async function promisify(rv) {return rv};
-
-const preventCaching = d => {
+const preventCaching = async d => {
 	if (!d.responseHeaders) return;
 	const url = new URL(d.url);
 	if (!processed.has(url.hostname)) return;
@@ -68,17 +66,17 @@ const preventCaching = d => {
 		name: 'Cache-Control',
 		value: 'no-cache, no store, must-revalidate'
 	});
-	return promisify({responseHeaders: newHeaders});
+	return {responseHeaders: newHeaders};
 };
 
 /** ------------------------------ **/
 
-webReq.onBeforeRequest.addListener(d => {
+webReq.onBeforeRequest.addListener(async d => {
 	const url = new URL(d.url);
 	if (tabsData[d.tabId].intercepting) {
 		const intercepting = tabsData[d.tabId].intercepting;
 		delete tabsData[d.tabId].intercepting;
-		if (intercepting === url.hostname) return promisify({cancel: true});
+		if (intercepting === url.hostname) return {cancel: true};
 	}
 	if (
 		!isIgnored(url.hostname) &&
@@ -96,9 +94,7 @@ webReq.onBeforeRequest.addListener(d => {
 		if (sAPI.maxWait) tabsData[d.tabId].timerID = setTimeout(() => {
 			downgrade(url, d);
 		}, sAPI.maxWait*1000);
-		return promisify({
-			redirectUrl: url.toString()
-		});
+		return {redirectUrl: url.toString()};
 	}
 }, filter, ['blocking']);
 
