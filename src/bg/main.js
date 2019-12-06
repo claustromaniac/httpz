@@ -65,7 +65,20 @@ const secureSaver = new DelayableAction(10, 120, () => {
 const setCleaner = new DelayableAction(100, 300, () => {
 	processed.clear();
 }, 10);
-const tabsData = {};
+const tabsData = {
+	async get(id) {
+		if (!this[id]) {
+			const gettingTab = tabs.get(id).then(r => {
+				this[id] = {incognito: r.incognito};
+			}).catch(ex => {
+				console.debug('HTTPZ: error getting tab', ex);
+				this[id] = {};
+			});
+			await gettingTab;
+		}
+		return this[id];
+	}
+};
 
 const sAPI = {
 	ignored: {}, // hostname:unixTimeStamp pairs
@@ -143,8 +156,8 @@ function daysSince(unixTimeStamp) {
 	return (Date.now() - unixTimeStamp) / 86400000;
 }
 
-function ignore(host, tabId) {
-	if (sAPI.honorPB && tabsData[tabId].incognito) {
+async function ignore(host, tabId) {
+	if (sAPI.honorPB && (await tabsData.get(tabId)).incognito) {
 		if (!sAPI.ignored_pb[host]) sAPI.ignored_pb[host] = Date.now();
 	} else if (!sAPI.ignored[host]) {
 		sAPI.ignored[host] = Date.now();
@@ -157,8 +170,8 @@ function ignore(host, tabId) {
 	}
 }
 
-function remember(host, tabId) {
-	if (sAPI.honorPB && tabsData[tabId].incognito) sAPI.knownSecure_pb[host] = null;
+async function remember(host, tabId) {
+	if (sAPI.honorPB && (await tabsData.get(tabId)).incognito) sAPI.knownSecure_pb[host] = null;
 	else {
 		sAPI.knownSecure[host] = null;
 		secureSaver.run();

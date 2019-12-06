@@ -38,15 +38,15 @@ function isReservedAddress(str) {
 	);
 }
 
-function downgrade(url, d) {
+async function downgrade(url, d) {
 	if (!sAPI.autoDowngrade) {
-		tabsData[d.tabId].url = d.url;
+		(await tabsData.get(d.tabId)).url = d.url;
 		tabs.update(d.tabId, {
 			loadReplace: true,
 			url: warningPage
 		});
 	} else if (!sAPI.rememberSecureSites || !isKnown(url.hostname)) {
-		ignore(url.hostname, d.tabId);
+		await ignore(url.hostname, d.tabId);
 		url.protocol = 'http:';
 		tabs.update(
 			d.tabId,
@@ -73,9 +73,10 @@ const preventCaching = async d => {
 
 webReq.onBeforeRequest.addListener(async d => {
 	const url = new URL(d.url);
-	if (tabsData[d.tabId].intercepting) {
-		const intercepting = tabsData[d.tabId].intercepting;
-		delete tabsData[d.tabId].intercepting;
+	const tabData = await tabsData.get(d.tabId);
+	if (tabData.intercepting) {
+		const intercepting = tabData.intercepting;
+		delete tabData.intercepting;
 		if (intercepting === url.hostname) return {cancel: true};
 	}
 	if (
@@ -84,14 +85,14 @@ webReq.onBeforeRequest.addListener(async d => {
 		!url.hostname.endsWith('.onion') &&
 		!isReservedAddress(url.hostname)
 	) {
-		if (sAPI.NSRedirectionsFix && tabsData[d.tabId].loading) {
-			ignore(tabsData[d.tabId].loading, d.tabId);
-			delete tabsData[d.tabId].loading;
+		if (sAPI.NSRedirectionsFix && tabData.loading) {
+			await ignore(tabData.loading, d.tabId);
+			delete tabData.loading;
 		}
 		url.protocol = 'https:';
 		processed.add(url.hostname);
 		setCleaner.run();
-		if (sAPI.maxWait) tabsData[d.tabId].timerID = setTimeout(() => {
+		if (sAPI.maxWait) tabData.timerID = setTimeout(() => {
 			downgrade(url, d);
 		}, sAPI.maxWait*1000);
 		return {redirectUrl: url.toString()};
@@ -104,7 +105,7 @@ webReq.onHeadersReceived.addListener(
 	['blocking', 'responseHeaders']
 );
 
-webReq.onBeforeRedirect.addListener(d => {
+webReq.onBeforeRedirect.addListener(async d => {
 	const url = new URL(d.url);
 	const newTarget = new URL(d.redirectUrl);
 	let downgrading;
@@ -118,30 +119,32 @@ webReq.onBeforeRedirect.addListener(d => {
 				!isIgnored(url.hostname) &&
 				!isWhitelisted(url.hostname)
 			) {
-				tabsData[d.tabId].intercepting = url.hostname;
-				tabsData[d.tabId].url = d.url;
+				const tabData = await tabsData.get(d.tabId);
+				tabData.intercepting = url.hostname;
+				tabData.url = d.url;
 				tabs.update(d.tabId, {
 					loadReplace: true,
 					url: redirectPage
 				});
 			}
-		} else ignore(url.hostname, d.tabId);
+		} else await ignore(url.hostname, d.tabId);
 	} else if (processed.has(url.hostname)) {
 		processed.add(newTarget.hostname);
 		setCleaner.run();
 	}
 }, sfilter);
 
-webReq.onResponseStarted.addListener(d => {
+webReq.onResponseStarted.addListener(async d => {
 	// required only as part of the mechanism that detects non-standard redirections to http
 	const url = new URL(d.url);
-	if (processed.has(url.hostname)) tabsData[d.tabId].loading = url.hostname;
+	if (processed.has(url.hostname)) (await tabsData.get(d.tabId)).loading = url.hostname;
 }, sfilter);
 
-webReq.onCompleted.addListener(d => {
+webReq.onCompleted.addListener(async d => {
 	const url = new URL(d.url);
 	if (processed.has(url.hostname)) {
-		if (tabsData[d.tabId].timerID) clearTimeout(tabsData[d.tabId].timerID);
+		const tabData = await tabsData.get(d.tabId);
+		if (tabData.timerID) clearTimeout(tabData.timerID);
 		if (
 			sAPI.proxyCompat &&
 			(d.statusCode === 502 || d.statusCode === 504)
@@ -153,15 +156,14 @@ webReq.onCompleted.addListener(d => {
 	if (sAPI.rememberSecureSites) remember(url.hostname, d.tabId);
 }, sfilter);
 
-webReq.onErrorOccurred.addListener(d => {
+webReq.onErrorOccurred.addListener(async d => {
 	console.info(`HTTPZ: ${d.error}`, d);
 	const url = new URL(d.url);
 	if (processed.has(url.hostname)) {
-		if (tabsData[d.tabId]) {
-			tabsData[d.tabId].error = d.error;
-			delete tabsData[d.tabId].loading;
-			if (tabsData[d.tabId].timerID) clearTimeout(tabsData[d.tabId].timerID);
-		}
+		const tabData = await tabsData.get(d.tabId);
+		tabData.error = d.error;
+		delete tabData.loading;
+		if (tabData.timerID) clearTimeout(tabData.timerID);
 		if (!exceptions.has(d.error)) downgrade(url, d);
 	}
 }, sfilter);

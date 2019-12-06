@@ -8,6 +8,7 @@ const wlSaver = new DelayableAction(10, 60, () => {
 });
 runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
 	const tabId = sender.tab ? sender.tab.id : undefined;
+	const tabData = tabId ? (await tabsData.get(tabId)) : undefined;
 	switch (msg.action) {
 		case 'get settings':				// options.js
 			return sAPI.getAll();
@@ -26,13 +27,13 @@ runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
 			delete sAPI.incognitoWhitelist[msg.host];
 			return tabs.reload(tabId, {bypassCache: true} );
 		case 'get tabsData URL':			// error.js, redirect.js
-			return {url: tabsData[tabId].url};
+			return {url: tabData.url};
 		case 'get error code':			// error.js
-			return {error: tabsData[tabId].error};
+			return {error: tabData.error};
 		case 'ignore':
 			return ignore(msg.host, tabId);
 		case 'content script':				// cs.js
-			if (tabsData[tabId]) delete tabsData[tabId].loading;
+			delete tabData.loading;
 			await sAPI.loading;
 			if (
 				processed.has(msg.host) && msg.protocol === 'https:' &&
