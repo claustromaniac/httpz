@@ -56,6 +56,7 @@ async function downgrade(url, d) {
 }
 
 const preventCaching = async d => {
+	if (d.tabId === -1) return;
 	if (!d.responseHeaders) return;
 	const url = new URL(d.url);
 	if (!processed.has(url.hostname)) return;
@@ -72,6 +73,7 @@ const preventCaching = async d => {
 /** ------------------------------ **/
 
 webReq.onBeforeRequest.addListener(async d => {
+	if (d.tabId === -1) return;
 	const url = new URL(d.url);
 	const tabData = await tabsData.get(d.tabId);
 	if (tabData.intercepting) {
@@ -106,6 +108,7 @@ webReq.onHeadersReceived.addListener(
 );
 
 webReq.onBeforeRedirect.addListener(async d => {
+	if (d.tabId === -1) return;
 	const url = new URL(d.url);
 	const newTarget = new URL(d.redirectUrl);
 	let downgrading;
@@ -135,12 +138,14 @@ webReq.onBeforeRedirect.addListener(async d => {
 }, sfilter);
 
 webReq.onResponseStarted.addListener(async d => {
+	if (d.tabId === -1) return;
 	// required only as part of the mechanism that detects non-standard redirections to http
 	const url = new URL(d.url);
 	if (processed.has(url.hostname)) (await tabsData.get(d.tabId)).loading = url.hostname;
 }, sfilter);
 
 webReq.onCompleted.addListener(async d => {
+	if (d.tabId === -1) return;
 	const url = new URL(d.url);
 	if (processed.has(url.hostname)) {
 		const tabData = await tabsData.get(d.tabId);
@@ -157,6 +162,7 @@ webReq.onCompleted.addListener(async d => {
 }, sfilter);
 
 webReq.onErrorOccurred.addListener(async d => {
+	if (d.tabId === -1) return;
 	console.info(`HTTPZ: ${d.error}`, d);
 	const url = new URL(d.url);
 	if (processed.has(url.hostname)) {
@@ -169,6 +175,7 @@ webReq.onErrorOccurred.addListener(async d => {
 }, sfilter);
 
 webReq.onErrorOccurred.addListener(d => {
+	if (d.tabId === -1) return;
 	const url = new URL(d.url);
 	if (processed.has(url.hostname) && isIgnored(url.hostname)) {
 		delete sAPI.ignored[url.hostname];
