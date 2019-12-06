@@ -4,17 +4,26 @@
 }
 body {
 	padding: 2em;
-	width: 30em;
+	max-width: 30em;
 }
-button {width: 15em;}
+button {max-width: 15em;}
 span {
 	font-weight: 100;
 	margin-bottom: 1em;
 	white-space: pre-line;
 }
-#incognito {
+img {
+	float: left;
+	max-width: 3em;
+}
+#d_incognito {
+	background: #474749;
 	display: none;
+	margin-bottom: 1em;
+	padding: 0.5em;
+}
+#incognito {
+	text-shadow: 1px 1px #000;
 	font-size: 1.1em;
 	font-weight: 700;
-	color: #6FF;
 }
