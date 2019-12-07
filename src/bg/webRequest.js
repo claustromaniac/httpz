@@ -55,21 +55,6 @@ async function downgrade(url, d) {
 	}
 }
 
-const preventCaching = async d => {
-	if (d.tabId === -1) return;
-	if (!d.responseHeaders) return;
-	const url = new URL(d.url);
-	if (!processed.has(url.hostname)) return;
-	const newHeaders = d.responseHeaders.filter(h => {
-		return h.name.toLowerCase() !== 'cache-control';
-	});
-	newHeaders.push({
-		name: 'Cache-Control',
-		value: 'no-cache, no store, must-revalidate'
-	});
-	return {responseHeaders: newHeaders};
-};
-
 /** ------------------------------ **/
 
 webReq.onBeforeRequest.addListener(async d => {
@@ -101,11 +86,21 @@ webReq.onBeforeRequest.addListener(async d => {
 	}
 }, filter, ['blocking']);
 
-webReq.onHeadersReceived.addListener(
-	preventCaching,
-	sfilter,
-	['blocking', 'responseHeaders']
-);
+webReq.onHeadersReceived.addListener(async d => {
+	//prevent caching processed requests to avoid potential issues
+	if (d.tabId === -1) return;
+	if (!d.responseHeaders) return;
+	const url = new URL(d.url);
+	if (!processed.has(url.hostname)) return;
+	const newHeaders = d.responseHeaders.filter(h => {
+		return h.name.toLowerCase() !== 'cache-control';
+	});
+	newHeaders.push({
+		name: 'Cache-Control',
+		value: 'no-cache, no store, must-revalidate'
+	});
+	return {responseHeaders: newHeaders};
+}, sfilter, ['blocking', 'responseHeaders']);
 
 webReq.onBeforeRedirect.addListener(async d => {
 	if (d.tabId === -1) return;
