@@ -9,10 +9,7 @@ browser.tabs.query({active: true, currentWindow: true}).then(tabs => {
 		ui.info.textContent = `HTTPZ redirected http://${url.hostname}/ to HTTPS\n\nIf the page does not seem to work well over HTTPS, you can attempt to reload it over HTTP and exclude the site from future redirections`;
 		ui.b_whitelist.textContent = 'Add to exclusions';
 		const incognito = browser.extension.inIncognitoContext;
-		if (incognito) {
-			ui.incognito.textContent = 'Note: sites excluded from a Private Browsing window will not be visible in the options page';
-			ui.d_incognito.style.display = 'block';
-		}
+		if (incognito) ui.incognito.style.display = 'block';
 		ui.b_whitelist.onclick = e => {
 			ui.b_whitelist.disabled = true;
 			url.protocol = 'http:';
