@@ -40,6 +40,7 @@ x-fill {
 	content: attr(data-info);
 	display: block;
 	font-weight: 100;
+	margin-left: -5em;
 	padding: 1em;
 	position: absolute;
 	text-shadow: 1px 1px black;
