@@ -1,4 +1,5 @@
 * {
+	font-weight: 100;
 	margin: 0 auto;
 	text-align: center;
 }
@@ -8,7 +9,6 @@ body {
 }
 button {max-width: 15em;}
 span {
-	font-weight: 100;
 	margin-bottom: 1em;
 	white-space: pre-line;
 }
@@ -16,6 +16,11 @@ img {
 	float: left;
 	max-width: 3em;
 }
+#reasons {
+	display: none;
+	margin-bottom: 1em;
+}
+#reasons * {text-align: initial;}
 #incognito {
 	background: #474749;
 	display: none;

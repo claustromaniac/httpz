@@ -15,17 +15,19 @@ runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
 		case 'update sAPI':					// options.js
 			for (const i in msg.data) sAPI[i] = msg.data[i]
 			return;
+		case 'isWhitelisted':
+			return isWhitelisted(msg.host);
 		case 'add to whitelist':			// popup.js
 			wlSaver.run();
 			msg.incognito
 			? sAPI.incognitoWhitelist[msg.host] = null
 			: sAPI.whitelist[msg.host] = null;
-			return tabs.update(tabId, {loadReplace: true, url: msg.url} );
+			return;
 		case 'remove from whitelist':		// popup.js
 			wlSaver.run();
 			delete sAPI.whitelist[msg.host];
 			delete sAPI.incognitoWhitelist[msg.host];
-			return tabs.reload(tabId, {bypassCache: true} );
+			return;
 		case 'get tabsData URL':			// error.js, redirect.js
 			return {url: tabData.url};
 		case 'get error code':			// error.js
@@ -36,9 +38,10 @@ runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
 			delete tabData.loading;
 			await sAPI.loading;
 			if (
-				processed.has(msg.host) && msg.protocol === 'https:' &&
-				!isWhitelisted(msg.host) && !isIgnored(msg.host) ||
-				isWhitelisted(msg.host) && msg.protocol === 'http:'
+				isWhitelisted(msg.host) ||
+				processed.has(msg.host) &&
+				msg.protocol === 'https:' &&
+				!isIgnored(msg.host)
 			) return pageAction.show(tabId);
 			else return pageAction.hide(tabId);
 	}
