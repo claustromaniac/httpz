@@ -44,7 +44,7 @@ tabs.query({active: true, currentWindow: true}).then(tabs_array => {
 			host: url.hostname
 		}).then(r => {
 			if (r) {
-				ui.info.textContent = `HTTPZ did not redirect ${url.hostname} to HTTPS, because it is in the list of exclusions\n\nThat it was loaded over HTTPS most likely means one of the following:`;
+				ui.info.textContent = `HTTPZ did not redirect ${url.hostname} to HTTPS, because it is in the list of exclusions\n\nIt was loaded over HTTPS likely for one of the following reasons:`;
 				ui.reasons.style.display = 'block';
 				ui.b_whitelist.textContent = 'Remove from exclusions';
 				ui.b_whitelist.onclick = removeFromWhitelist;
